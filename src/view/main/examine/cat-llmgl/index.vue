@@ -8,27 +8,19 @@
                 </div>
                 <div class="right">
                     <div class="input demo-input-size">
-                        <el-input v-model="search" class="w-50 m-2" size="large" placeholder="Please Input"
+                        <el-input clearable v-model="search" class="w-50 m-2" size="large" placeholder="Please Input"
                             prefix-icon="Search" @blur="searchFn" />
                     </div>
                     <el-radio-group v-model="radio1" size="large" @change="radioFn">
-                        <el-radio-button label="全部" />
-                        <el-radio-button label="待审核" />
-                        <el-radio-button label="已审核" />
-                        <el-radio-button label="未通过" />
+                        <el-radio-button :label="item.name" v-for="item in tabList" :key="item.label" />
                     </el-radio-group>
                 </div>
             </div>
             <div class="content-box">
-                <!-- <div class="content-box-header">
-                    <ul>
-                        <li v-for="item in headerList" :key="item">{{ item.name }}</li>
-                    </ul>
-                </div> -->
-
                 <div class="content-box-table">
-                    <el-table :data="GoodsList" :border=true :stripe="true"
-                        :default-sort="{ prop: 'updated_at', order: 'descending' }" style="width: 100%">
+                    <el-table :data="GoodsList" :border=true :stripe="true" v-loading="loading" empty-text="没有数据哦"
+                        :default-sort="[{ prop: 'updated_at', order: 'ascending' }, { prop: 'to_examine', order: 'ascending' }]"
+                        style="width: 100%">
                         <el-table-column prop="user_id.username" label="用户名称" />
                         <el-table-column prop="addrs.provinceName" label="地区" width="280" />
                         <el-table-column prop="Successful_adoption" label="是否被申请" width="280">
@@ -45,15 +37,15 @@
                                 </el-tag>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="to_examine" label="状态" sortable :sort-by="['state', 'state']">
+                        <el-table-column prop="to_examine" label="状态" sortable :sort-by="['pass', 'examine', 'danger']">
                             <template #default="scope">
                                 <el-tag class="ml-2" type="success" v-if="scope.row.to_examine == 'pass'">已通过</el-tag>
-                                <el-tag v-else-if="scope.row.state == 'examine'">待审核</el-tag>
-                                <el-tag v-else class="ml-2" type="danger">未通过</el-tag>
+                                <el-tag v-else-if="scope.row.to_examine == 'examine'">待审核</el-tag>
+                                <el-tag v-else class="ml-2" type="danger">未通过审核</el-tag>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="updated_at" label="发布时间" sortable />
-                        <el-table-column prop="to_examine" label="审核" class="examine" sortable
+                        <el-table-column prop="updated_at" label="发布时间" sortable :formatter="FormatTime" />
+                        <el-table-column prop="to_examine" label="审核" class="examine" width="200" sortable
                             :sort-by="['examine', 'nopass', 'pass']">
                             <template #default="scope">
                                 <div class="btn">
@@ -63,8 +55,17 @@
                                     </div>
                                     <!-- 这里是待审核的状态 -->
                                     <div v-else-if="scope.row.to_examine == 'examine'">
-                                        <el-button type="primary" icon="Select">通过</el-button>
-                                        <el-button type="danger" icon="CloseBold">不通过</el-button>
+                                        <el-popconfirm title="是否通过该帖子" @confirm="passFn(scope.row, true)">
+                                            <template #reference>
+                                                <el-button type="primary" icon="Select">通过</el-button>
+                                            </template>
+                                        </el-popconfirm>
+                                        <el-popconfirm title="是否通过该帖子" @confirm="passFn(scope.row, false)">
+                                            <template #reference>
+                                                <el-button type="danger" icon="CloseBold">不通过</el-button>
+                                            </template>
+                                        </el-popconfirm>
+
                                     </div>
                                     <!-- 这里是审核未通过的模块 -->
                                     <div v-else>
@@ -76,7 +77,9 @@
                         </el-table-column>
                         <el-table-column prop="more" label="更多">
                             <template #default="scope">
-                                <router-link :to="`/llmgl/llmglsubmit/${scope.row.id}`">查看详情</router-link>
+                                <router-link :to="`/llmgl/llmglsubmit/${scope.row._id}`">
+                                    <el-link type="primary">primary</el-link>
+                                </router-link>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -98,21 +101,21 @@
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import { computed, ref, reactive, watch } from 'vue'
-
+import { FormatTime } from '@/utils/time.js'
 import { ElMessage } from 'element-plus'
 
 
 
-import { GetBgData } from '@/api/sh.js'
+import { GetBgData, PushModifyPost } from '@/api/sh.js'
 export default {
     name: "CatLlmsh",
 
     setup() {
+        let store = useStore()
         let route = useRoute()
 
         // 设置按钮状态的
         let radio1 = ref("全部")
-
 
         // 设置header标签的
         let headerList = ref([
@@ -125,144 +128,79 @@ export default {
             { name: "更多" },
         ])
 
+        // 加载的判断值
+        let loading = ref(false);
 
+
+        // 搜索的值
         let search = ref('')
 
+
         // 这里是搜索的发送请求获取数据
-        let searchFn = () => {
-            console.log("测试数据")
+        let searchFn = async (value) => {
+            // 这里我们设置了请求的值
+            typeData.searchVal = search.value
+            GetBgDataFn()
         }
 
 
-        // 
-        let radioFn = (val) => {
-            console.log(val);
-        }
-
-
-        // 测试数据
-        const tableData = [
-            {
-                id: "1",
-                username: 'FeiMao@110',
-                adds: '赣州市',
-                label: ["标签1", "标签2", "标签1", "标签2", "标签1", "标签2", "标签1", "标签2", "标签1", "标签2"],
-                state: "examine",
-                upload_time: "2023.4.5",
-                examine: true,
-                more: "更多"
-            },
-            {
-                id: "1",
-                username: 'FeiMao@110',
-                adds: '赣州市',
-                label: ["标签1", "标签2", "标签1", "标签2", "标签1", "标签2", "标签1", "标签2", "标签1", "标签2"],
-                state: "examine",
-                upload_time: "2023.4.5",
-                examine: true,
-                more: "更多"
-            }, {
-                id: "1",
-                username: 'FeiMao@110',
-                adds: '赣州市',
-                label: ["标签1", "标签2", "标签1", "标签2", "标签1", "标签2", "标签1", "标签2", "标签1", "标签2"],
-                state: "examine",
-                upload_time: "2023.4.5",
-                examine: true,
-                more: "更多"
-            }, {
-                id: "1",
-                username: 'FeiMao@110',
-                adds: '赣州市',
-                label: ["标签1", "标签2", "标签1", "标签2", "标签1", "标签2", "标签1", "标签2", "标签1", "标签2"],
-                state: "examine",
-                upload_time: "2023.4.5",
-                examine: true,
-                more: "更多"
-            }, {
-                id: "1",
-                username: 'FeiMao@110',
-                adds: '赣州市',
-                label: ["标签1", "标签2", "标签1", "标签2", "标签1", "标签2", "标签1", "标签2", "标签1", "标签2"],
-                state: "examine",
-                upload_time: "2023.4.5",
-                examine: true,
-                more: "更多"
-            }, {
-                id: "1",
-                username: 'FeiMao@110',
-                adds: '赣州市',
-                label: ["标签1", "标签2", "标签1", "标签2", "标签1", "标签2", "标签1", "标签2", "标签1", "标签2"],
-                state: "examine",
-                upload_time: "2023.4.5",
-                examine: true,
-                more: "更多"
-            },
-            {
-                id: "1",
-                username: 'MenMao@110',
-                adds: '赣州市',
-                label: ["标签1", "标签2"],
-                state: "pass",
-                upload_time: "2023.4.6",
-                examine: false,
-                more: "更多"
-            }, {
-                id: "1",
-                username: '小白',
-                adds: '赣州市',
-                label: ["标签1", "标签2"],
-                state: "examine",
-                upload_time: "2023.4.7",
-                examine: false,
-                more: "更多"
-            }, {
-                id: "1",
-                username: '小黑',
-                adds: '江西省赣州市赣县区',
-                label: ["标签1", "标签2"],
-                state: "nopass",
-                upload_time: "2023.4.8",
-                examine: false,
-                more: "更多"
-            },
-            {
-
-                id: "1",
-                username: '小黑',
-                adds: '江西省赣州市赣县区',
-                label: ["标签1", "标签2"],
-                state: "nopass",
-                upload_time: "2023.4.8",
-                examine: false,
-                more: "更多"
-            },
-        ]
 
 
 
+
+
+
+
+
+        // 保存数据的模块
+        let GoodsList = computed(() => store.state.llmsh.GoodsList)
+
+        // 需要提交的数据
         let typeData = reactive({
             page: 1,
             pageSize: 10,
             total: 0,
+            searchVal: "",
             type: "whole",
         })
 
 
 
-        let pageFn = (value) => {
-            typeData.page = value
+
+        // Tab模块数据
+
+        // tab 数据模块
+        let tabList = ref([
+            { name: "全部", label: "whole" },
+            { name: "待审核", label: "examine" },
+            { name: "通过", label: "pass" },
+            { name: "未通过", label: "nopass" },
+        ])
+
+        // 这个是筛选按钮的模块
+        let radioFn = (val) => {
+            // 这里查询到数据并赋予 最后重新发送请求获取数据
+            let index = tabList.value.findIndex(item => item.name == val)
+            typeData.type = tabList.value[index].label
+            typeData.page = 1
+            GetBgDataFn()
         }
 
 
-        // 保存数据的模块
-        let GoodsList = ref([])
+
+
 
         let GetBgDataFn = () => {
+            loading.value = true;
             GetBgData(typeData).then(({ result }) => {
                 console.log(result);
-                GoodsList.value = result.data
+                // 将数据给响应性数据的变量
+                // GoodsList.value = result.data
+                store.commit('llmsh/AddGoodsList', result.data)
+                // 更新总条数
                 typeData.total = result.total
+
+                loading.value = false;
             }).catch(err => {
                 //这里获取数据失败的情况
                 return ElMessage({
@@ -272,21 +210,36 @@ export default {
             })
         }
 
+        GetBgDataFn()
 
-        watch(typeData, (newval, olval) => {
-            console.log("变化了");
+
+
+
+
+
+
+        // 分页器模块
+        // 这个是分页器设置的模式数据
+        let pageFn = (value) => {
+            typeData.page = value
             GetBgDataFn()
-        }, {
-            immediate: true,
-        })
+        }
 
 
 
 
+        // 审核模块
+        let passFn = (value, type) => {
+            store.commit('llmsh/ModifyGoodsList', { _id: value._id, type: type })
+            //表示是需要通过
+            PushModifyPost({ _id: value._id, type: type }).then(value => {
+                console.log(value);
+            })
+
+        }
 
 
-
-        return { radio1, headerList, tableData, search, searchFn, radioFn, GoodsList, pageFn, typeData }
+        return { radio1, headerList, search, searchFn, radioFn, GoodsList, pageFn, loading, typeData, FormatTime, tabList, passFn }
 
 
 
@@ -311,7 +264,6 @@ export default {
     overflow: auto;
 
     .content {
-
         .content-header {
             height: 74px;
             display: flex;
@@ -349,8 +301,7 @@ export default {
 
 
             .content-box-fyq {
-                min-height: 300px;
-                border: 1px solid red;
+                min-height: 150px;
                 display: flex;
                 justify-content: space-around;
             }
