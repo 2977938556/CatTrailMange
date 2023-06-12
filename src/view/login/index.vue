@@ -70,17 +70,18 @@ export default {
             // 这里就是要发送请求
             try {
                 let { result: { data, token } } = await GetUserLogin({ username: username.value, password: password.value })
+
                 store.commit('user/SetUser', { ...data, token })
                 router.push('/')
 
                 return ElMessage({
-                    message:`登录成功 ${data.username}`,
+                    message: `登录成功 ${data.username}`,
                     type: 'success',
                 })
 
             } catch ({ response: { data } }) {
                 return ElMessage({
-                    message: data.message,
+                    message: data.message || "服务器错误",
                     type: 'error',
                 })
             }

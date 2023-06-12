@@ -6,6 +6,8 @@ import axios from 'axios'
 import store from '@/store'
 import router from '@/router'
 // import MessageJs from '@/components/libray/CarMessage.js'
+import { ElMessage } from 'element-plus'
+
 
 
 
@@ -50,6 +52,7 @@ instance.interceptors.response.use(res => res.data, err => {
 
         // 基于当前的路径存储在回调地址中
         // MessageJs({ text: `${err.response.data.message}`, type: "error" })
+        ElMessage.error('用户信息已过期，请重新登录')
         if (router.currentRoute.value.fullPath) {
             const fullPath = encodeURIComponent(router.currentRoute.value.fullPath)
             router.push('/login?redirectUrl=' + fullPath)

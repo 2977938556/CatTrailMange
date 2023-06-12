@@ -1,6 +1,6 @@
 import request from '@/utils/request.js'
 
 
-export let GetShLlmGlList = (type = "all") => {
-    return request('/home/recommend', 'get')
+export let GetBgData = (data) => {
+    return request('/bg/catdata', 'post', data)
 }

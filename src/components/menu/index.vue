@@ -2,10 +2,15 @@
     <div class="menu">
         <el-row class="tac">
             <el-col :span="24">
-                <h1 class="mb-2">猫迹</h1>
+
+                <div class="logo">
+                    <img src="../../assets/image/cat-logo@1x.png" alt="">
+                    <span>后台管理</span>
+                </div>
+
                 <el-menu default-active="/sjgl" class="el-menu-demo" mode="vertical" background-color="#334154"
                     text-color="#fff" active-text-color="#ffd04b" @select="handleSelect" :unique-opened="true"
-                    :default-openeds="['/', 'sh', '/pzgl']">
+                    :default-openeds="['/', 'sh', '/pzgl']" >
 
                     <el-sub-menu index="/" v-for="item in  menuNo " :key="item.patj">
                         <template #title>
@@ -151,7 +156,6 @@ export default {
     height: 100%;
     overflow: hidden;
 
-
 }
 
 .el-menu {
@@ -191,8 +195,39 @@ export default {
 
 //设置侧边栏父级菜单高亮
 ::v-deep(.el-submenu.is-active > .el-submenu__title) {
-  color: #409EFF !important;
+    color: #409EFF !important;
 }
 
 
+
+// Logo标志
+.logo {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    span {
+        margin-left: 7px;
+        margin-top: 5px;
+        display: block;
+        width: auto;
+        width: 42px;
+        height: 18px;
+        opacity: 1;
+        border-radius: 8px;
+        background: rgba(255, 124, 0, 1);
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding: 3px 5px 3px 5px;
+        /** 文本1 */
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0px;
+        cursor: pointer;
+        color: rgba(255, 255, 255, 1);
+    }
+}
 </style>

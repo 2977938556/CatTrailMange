@@ -27,42 +27,50 @@
                 </div> -->
 
                 <div class="content-box-table">
-                    <el-table :data="tableData" :border=true :stripe="true"
-                        :default-sort="{ prop: 'upload_time', order: 'descending' }" style="width: 100%">
-                        <el-table-column prop="username" label="用户名称" />
-                        <el-table-column prop="adds" label="地区" width="280" />
-                        <el-table-column prop="label" label="标签">
+                    <el-table :data="GoodsList" :border=true :stripe="true"
+                        :default-sort="{ prop: 'updated_at', order: 'descending' }" style="width: 100%">
+                        <el-table-column prop="user_id.username" label="用户名称" />
+                        <el-table-column prop="addrs.provinceName" label="地区" width="280" />
+                        <el-table-column prop="Successful_adoption" label="是否被申请" width="280">
                             <template #default="scope">
-                                <el-tag style="margin-left: 10px;" v-for="(item, index) in scope.row.label" :key="index">{{
+                                <p v-if="scope.row.Successful_adoption">已被领养</p>
+                                <p v-else>无被领养</p>
+
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="lable" label="标签">
+                            <template #default="scope">
+                                <el-tag style="margin-left: 10px;" v-for="(item, index) in scope.row.lable" :key="index">{{
                                     item }}
                                 </el-tag>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="state" label="状态" sortable :sort-by="['state', 'state']">
+                        <el-table-column prop="to_examine" label="状态" sortable :sort-by="['state', 'state']">
                             <template #default="scope">
-                                <el-tag class="ml-2" type="success" v-if="scope.row.state == 'pass'">已通过</el-tag>
+                                <el-tag class="ml-2" type="success" v-if="scope.row.to_examine == 'pass'">已通过</el-tag>
                                 <el-tag v-else-if="scope.row.state == 'examine'">待审核</el-tag>
-                                <el-tag v-else class="ml-2" type="info">未通过</el-tag>
+                                <el-tag v-else class="ml-2" type="danger">未通过</el-tag>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="upload_time" label="发布时间" sortable />
-                        <el-table-column prop="examine" label="审核" class="examine" sortable
-                            :sort-by="['examine', 'nopass']">
+                        <el-table-column prop="updated_at" label="发布时间" sortable />
+                        <el-table-column prop="to_examine" label="审核" class="examine" sortable
+                            :sort-by="['examine', 'nopass', 'pass']">
                             <template #default="scope">
                                 <div class="btn">
                                     <!-- 这里是已经审核通过的模块 -->
-                                    <div v-if="scope.row.state == 'pass'">
+                                    <div v-if="scope.row.to_examine == 'pass'">
                                         <el-button type="success" disabled>已通过</el-button>
                                     </div>
                                     <!-- 这里是待审核的状态 -->
-                                    <div v-else-if="scope.row.state == 'examine'">
+                                    <div v-else-if="scope.row.to_examine == 'examine'">
                                         <el-button type="primary" icon="Select">通过</el-button>
-                                        <el-button type="danger" icon="CloseBold">未通过</el-button>
+                                        <el-button type="danger" icon="CloseBold">不通过</el-button>
                                     </div>
                                     <!-- 这里是审核未通过的模块 -->
                                     <div v-else>
                                         <el-button type="danger" icon="Delete" disabled>未通过</el-button>
                                     </div>
+
                                 </div>
                             </template>
                         </el-table-column>
@@ -72,6 +80,10 @@
                             </template>
                         </el-table-column>
                     </el-table>
+                </div>
+
+                <div class="content-box-fyq">
+                    <el-pagination background layout="prev, pager, next" :total="typeData.total" @current-change="pageFn" />
                 </div>
 
             </div>
@@ -85,11 +97,13 @@
 <script>
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
-import { computed, ref } from 'vue'
+import { computed, ref, reactive, watch } from 'vue'
+
+import { ElMessage } from 'element-plus'
 
 
 
-import { GetShLlmGlList } from '@/api/sh.js'
+import { GetBgData } from '@/api/sh.js'
 export default {
     name: "CatLlmsh",
 
@@ -126,11 +140,55 @@ export default {
         }
 
 
-
-
         // 测试数据
         const tableData = [
             {
+                id: "1",
+                username: 'FeiMao@110',
+                adds: '赣州市',
+                label: ["标签1", "标签2", "标签1", "标签2", "标签1", "标签2", "标签1", "标签2", "标签1", "标签2"],
+                state: "examine",
+                upload_time: "2023.4.5",
+                examine: true,
+                more: "更多"
+            },
+            {
+                id: "1",
+                username: 'FeiMao@110',
+                adds: '赣州市',
+                label: ["标签1", "标签2", "标签1", "标签2", "标签1", "标签2", "标签1", "标签2", "标签1", "标签2"],
+                state: "examine",
+                upload_time: "2023.4.5",
+                examine: true,
+                more: "更多"
+            }, {
+                id: "1",
+                username: 'FeiMao@110',
+                adds: '赣州市',
+                label: ["标签1", "标签2", "标签1", "标签2", "标签1", "标签2", "标签1", "标签2", "标签1", "标签2"],
+                state: "examine",
+                upload_time: "2023.4.5",
+                examine: true,
+                more: "更多"
+            }, {
+                id: "1",
+                username: 'FeiMao@110',
+                adds: '赣州市',
+                label: ["标签1", "标签2", "标签1", "标签2", "标签1", "标签2", "标签1", "标签2", "标签1", "标签2"],
+                state: "examine",
+                upload_time: "2023.4.5",
+                examine: true,
+                more: "更多"
+            }, {
+                id: "1",
+                username: 'FeiMao@110',
+                adds: '赣州市',
+                label: ["标签1", "标签2", "标签1", "标签2", "标签1", "标签2", "标签1", "标签2", "标签1", "标签2"],
+                state: "examine",
+                upload_time: "2023.4.5",
+                examine: true,
+                more: "更多"
+            }, {
                 id: "1",
                 username: 'FeiMao@110',
                 adds: '赣州市',
@@ -179,25 +237,56 @@ export default {
                 examine: false,
                 more: "更多"
             },
-            {
-                id: "1",
-                username: '小黑',
-                adds: '江西省赣州市赣县区',
-                label: ["标签1", "标签2"],
-                state: "nopass",
-                upload_time: "2023.4.8",
-                examine: false,
-                more: "更多"
-            }
         ]
 
 
-        // GetShLlmGlList().then(value => {
-        //     console.log(value);
-        // })
+
+        let typeData = reactive({
+            page: 1,
+            pageSize: 10,
+            total: 0,
+            type: "whole",
+        })
 
 
-        return { radio1, headerList, tableData, search, searchFn, radioFn }
+
+        let pageFn = (value) => {
+            typeData.page = value
+        }
+
+
+        // 保存数据的模块
+        let GoodsList = ref([])
+
+        let GetBgDataFn = () => {
+            GetBgData(typeData).then(({ result }) => {
+                console.log(result);
+                GoodsList.value = result.data
+                typeData.total = result.total
+            }).catch(err => {
+                //这里获取数据失败的情况
+                return ElMessage({
+                    message: "获取数据失败",
+                    type: 'error',
+                })
+            })
+        }
+
+
+        watch(typeData, (newval, olval) => {
+            console.log("变化了");
+            GetBgDataFn()
+        }, {
+            immediate: true,
+        })
+
+
+
+
+
+
+
+        return { radio1, headerList, tableData, search, searchFn, radioFn, GoodsList, pageFn, typeData }
 
 
 
@@ -237,7 +326,7 @@ export default {
             }
 
             .right {
-                flex: 0.5;
+                // flex: 0.7;
                 padding-right: 20px;
                 display: flex;
                 justify-content: space-between;
@@ -259,28 +348,16 @@ export default {
 
 
 
-            // 导航区域
-            .content-box-header {
-                width: 100%;
-                height: 50px;
-
-                ul {
-                    display: flex;
-                    background: rgba(242, 242, 242, 1);
-
-                    li {
-                        flex: 1;
-                        text-align: center;
-                        line-height: 50px;
-                        font-size: 16px;
-                        font-weight: 400;
-                        letter-spacing: 0px;
-                        color: rgba(51, 51, 51, 1);
-                        vertical-align: top;
-                    }
-                }
+            .content-box-fyq {
+                min-height: 300px;
+                border: 1px solid red;
+                display: flex;
+                justify-content: space-around;
             }
+
+
         }
+
     }
 
 

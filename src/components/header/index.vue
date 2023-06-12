@@ -4,14 +4,14 @@
         </div>
         <div class="right">
             <div class="img">
-                <el-avatar :size="50" src="https://img.js.design/assets/smartFill/img304164da746310.jpeg" />
+                <el-avatar :size="50" :src="userDat.bgimgUrl" />
                 <!-- <img src="" alt=""> -->
             </div>
             <div class="text">
-                <p>FeiMao@110</p>
+                <p>{{ userDat.username }}</p>
                 <el-dropdown trigger="click" @command="handleCommand">
                     <span class="el-dropdown-link">
-                        超级管理员
+                        {{ userDat.bgimgUrl == 'admin' ? "超级管理员" : "普通管理员" }}
                         <el-icon class="el-icon--right">
                             <arrow-down />
                         </el-icon>
@@ -30,13 +30,27 @@
 <script>
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router'
+import { computed } from 'vue'
 export default {
     name: "CatHeader",
 
     setup() {
-
         let store = useStore()
         let router = useRouter()
+
+
+        let userDat = computed(() => store.state.user.profile)
+
+
+
+
+
+
+
+
+
+
+
 
         // 这个方法是用于设置点击事件的情况
         let handleCommand = (key) => {
@@ -48,7 +62,7 @@ export default {
 
 
         }
-        return { handleCommand }
+        return { handleCommand, userDat }
     }
 }
 </script>
@@ -60,7 +74,7 @@ export default {
     height: 56px;
     display: flex;
     justify-content: space-between;
-    box-shadow: 1px 3px 8px  rgba(0, 0, 0, 0.1);
+    box-shadow: 1px 3px 8px rgba(0, 0, 0, 0.1);
 
     .left {
         flex: 1
