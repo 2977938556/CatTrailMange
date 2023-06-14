@@ -28,6 +28,13 @@ import '@/assets/styles/default.less'
 
 
 
+
+
+// 注册全局插件
+import UI from '@/components/libray/index.js'
+app.use(UI)
+
+
 // 导入vuex
 import store from '@/store'
 app.use(store)

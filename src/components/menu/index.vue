@@ -9,8 +9,8 @@
                 </div>
 
                 <el-menu default-active="/sjgl" class="el-menu-demo" mode="vertical" background-color="#334154"
-                    text-color="#fff" active-text-color="#ffd04b" @select="handleSelect" :unique-opened="true"
-                    :default-openeds="['/', 'sh', '/pzgl']" >
+                    text-color="#fff" active-text-color="#ffd04b" @select="handleSelect" 
+                    >
 
                     <el-sub-menu index="/" v-for="item in  menuNo " :key="item.patj">
                         <template #title>

@@ -3,8 +3,8 @@
         <div class="content" v-if="$route.meta.path != '/llmglsubmit'">
             <div class="content-header">
                 <div class="left">
-                    <h1>总申请量：</h1>
-                    <p>881242位用户</p>
+                    <h1>{{ radio1 }}&nbsp&nbsp:&nbsp&nbsp</h1>
+                    <p>{{ typeData.total }}&nbsp条</p>
                 </div>
                 <div class="right">
                     <div class="input demo-input-size">
@@ -16,18 +16,26 @@
                     </el-radio-group>
                 </div>
             </div>
-            <div class="content-box">
+            <div class="content-box" v-if="GoodsList">
                 <div class="content-box-table">
                     <el-table :data="GoodsList" :border=true :stripe="true" v-loading="loading" empty-text="没有数据哦"
                         :default-sort="[{ prop: 'updated_at', order: 'ascending' }, { prop: 'to_examine', order: 'ascending' }]"
                         style="width: 100%">
                         <el-table-column prop="user_id.username" label="用户名称" />
-                        <el-table-column prop="addrs.provinceName" label="地区" width="280" />
-                        <el-table-column prop="Successful_adoption" label="是否被申请" width="280">
+                        <el-table-column prop="addrs.fullLocation" label="地区" width="280" />
+                        <el-table-column prop="Successful_adoption" label="是否被申请" width="120">
                             <template #default="scope">
                                 <p v-if="scope.row.Successful_adoption">已被领养</p>
                                 <p v-else>无被领养</p>
 
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="title" label="标题" :formatter="SelectString">
+                            <template #default="scope">
+                                <el-tooltip placement="top">
+                                    <template #content>{{ scope.row.title }}</template>
+                                    <p>{{ SelectString(scope.row.title) }}</p>
+                                </el-tooltip>
                             </template>
                         </el-table-column>
                         <el-table-column prop="lable" label="标签">
@@ -77,16 +85,15 @@
                         </el-table-column>
                         <el-table-column prop="more" label="更多">
                             <template #default="scope">
-                                <router-link :to="`/llmgl/llmglsubmit/${scope.row._id}`">
-                                    <el-link type="primary">primary</el-link>
-                                </router-link>
+                                <el-button type="success" @click="GetCatContent(scope.row._id)">查看</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
                 </div>
 
                 <div class="content-box-fyq">
-                    <el-pagination background layout="prev, pager, next" :total="typeData.total" @current-change="pageFn" />
+                    <el-pagination background :page-size="typeData.pageSize" :default-current-page="typeData.page"
+                        layout="prev, pager, next" :total="typeData.total" @current-change="pageFn" />
                 </div>
 
             </div>
@@ -99,7 +106,7 @@
 
 <script>
 import { useStore } from 'vuex'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { computed, ref, reactive, watch } from 'vue'
 import { FormatTime } from '@/utils/time.js'
 import { ElMessage } from 'element-plus'
@@ -113,6 +120,7 @@ export default {
     setup() {
         let store = useStore()
         let route = useRoute()
+        let router = useRouter()
 
         // 设置按钮状态的
         let radio1 = ref("全部")
@@ -132,8 +140,20 @@ export default {
         let loading = ref(false);
 
 
+        let GetCatContent = (val) => {
+            store.commit('llmsh/AddId', val)
+
+            router.push({
+                name: "llmglsubmit",
+            });
+        }
+
+
+
         // 搜索的值
         let search = ref('')
+
+
 
 
         // 这里是搜索的发送请求获取数据
@@ -142,6 +162,15 @@ export default {
             typeData.searchVal = search.value
             GetBgDataFn()
         }
+
+        // 截取其中部分内容
+        let SelectString = (value) => {
+            if (value.length > 10) {
+                return value.slice(0, 10) + "..."
+            }
+            return value.slice(0, 10)
+        }
+
 
 
 
@@ -157,14 +186,12 @@ export default {
 
         // 需要提交的数据
         let typeData = reactive({
-            page: 1,
+            page: store.state.llmsh.page,
             pageSize: 10,
             total: 0,
             searchVal: "",
             type: "whole",
         })
-
-
 
 
         // Tab模块数据
@@ -188,12 +215,10 @@ export default {
 
 
 
-
-
         let GetBgDataFn = () => {
             loading.value = true;
             GetBgData(typeData).then(({ result }) => {
-                console.log(result);
+                console.log("数据", result);
                 // 将数据给响应性数据的变量
                 // GoodsList.value = result.data
                 store.commit('llmsh/AddGoodsList', result.data)
@@ -210,18 +235,20 @@ export default {
             })
         }
 
-        GetBgDataFn()
 
 
-
-
+        watch(() => route.path, (newval, olval) => {
+            GetBgDataFn()
+        }, { immediate: true })
 
 
 
         // 分页器模块
         // 这个是分页器设置的模式数据
         let pageFn = (value) => {
-            typeData.page = value
+            store.commit('llmsh/AddPage', value)
+            typeData.page = store.state.llmsh.page
+            console.log(store.state.llmsh.page);
             GetBgDataFn()
         }
 
@@ -239,7 +266,7 @@ export default {
         }
 
 
-        return { radio1, headerList, search, searchFn, radioFn, GoodsList, pageFn, loading, typeData, FormatTime, tabList, passFn }
+        return { radio1, headerList, search, searchFn, radioFn, GoodsList, GetCatContent, pageFn, loading, typeData, FormatTime, tabList, SelectString, passFn }
 
 
 
@@ -299,6 +326,9 @@ export default {
             }
 
 
+            .content-box-table {
+                min-height: 600px;
+            }
 
             .content-box-fyq {
                 min-height: 150px;

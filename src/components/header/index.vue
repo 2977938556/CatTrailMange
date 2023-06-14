@@ -11,7 +11,7 @@
                 <p>{{ userDat.username }}</p>
                 <el-dropdown trigger="click" @command="handleCommand">
                     <span class="el-dropdown-link">
-                        {{ userDat.bgimgUrl == 'admin' ? "超级管理员" : "普通管理员" }}
+                        {{ userDat.role == 'admin' ? "超级管理员" : "普通管理员" }}
                         <el-icon class="el-icon--right">
                             <arrow-down />
                         </el-icon>
@@ -33,6 +33,7 @@ import { useRouter } from 'vue-router'
 import { computed } from 'vue'
 export default {
     name: "CatHeader",
+  
 
     setup() {
         let store = useStore()
@@ -44,20 +45,12 @@ export default {
 
 
 
-
-
-
-
-
-
-
-
         // 这个方法是用于设置点击事件的情况
         let handleCommand = (key) => {
             // 退出登录模块
             if (key == "a") {
-                store.commit('user/SetUser', {})
                 router.go(-1)
+                store.commit('user/SetUser', {})
             }
 
 

@@ -22,7 +22,7 @@ import Cat_config from '@/view/main/config/index.vue'// 配置管理
 
 
 // 子集页面
-import Cat_LlmglSubmittPage from '@/view/main/examine/cat-llmgl/submit/index.vue'// 流浪猫管理
+import Cat_LlmglSubmittPage from '@/view/main/examine/cat-llmgl/subset/index.vue'// 流浪猫管理
 
 
 
@@ -40,7 +40,7 @@ const routes = [
             { path: 'sjgl', component: Cat_SjglPage, name: 'sjgl', meta: { name: "数据管理", path: '/sjgl' } },// 数据管理
             {
                 path: 'llmgl', component: Cat_LlmGlPage, name: 'llmgl', meta: { name: "流浪猫管理", path: '/llmgl' }, children: [
-                    { path: 'llmglsubmit/:id', component: Cat_LlmglSubmittPage, meta: { name: "流浪猫管理详情界面", path: "/llmglsubmit" } }
+                    { path: 'llmglsubmit', name: "llmglsubmit", component: Cat_LlmglSubmittPage, meta: { name: "流浪猫管理详情界面", path: "/llmglsubmit" } }
                 ]
             },// 流浪猫管理
             { path: 'gsgl', component: Cat_GsglPage, name: 'gsgl', meta: { name: "故事管理", path: '/gsgl' } },// 故事管理
