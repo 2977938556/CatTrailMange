@@ -9,8 +9,7 @@
                 </div>
 
                 <el-menu default-active="/sjgl" class="el-menu-demo" mode="vertical" background-color="#334154"
-                    text-color="#fff" active-text-color="#ffd04b" @select="handleSelect" 
-                    >
+                    text-color="#fff" active-text-color="#ffd04b" @select="handleSelect">
 
                     <el-sub-menu index="/" v-for="item in  menuNo " :key="item.patj">
                         <template #title>
@@ -182,7 +181,7 @@ export default {
 }
 
 /* 设置选中菜单的背景颜色 */
-.el-menu-item.is-active,
+el-menu-item.is-active,
 .el-submenu.is-active>.el-submenu__title {
     background-color: #222D3C;
 }
@@ -199,6 +198,16 @@ export default {
 }
 
 
+//对应子级，父级的样式
+// .el-submenu.is-active>.el-submenu__title {
+//     background: rgb(206, 169, 181) !important;
+// }
+
+// //当前选中子级的样式
+// .is-active {
+//     color: #ffd04b !important;
+//     background: rgb(42, 62, 77) !important;
+// }
 
 // Logo标志
 .logo {

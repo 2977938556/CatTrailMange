@@ -191,6 +191,7 @@ export default {
             total: 0,
             searchVal: "",
             type: "whole",
+            typeofs: "llm",
         })
 
 
@@ -257,11 +258,22 @@ export default {
 
         // 审核模块
         let passFn = (value, type) => {
-            store.commit('llmsh/ModifyGoodsList', { _id: value._id, type: type })
             //表示是需要通过
-            PushModifyPost({ _id: value._id, type: type }).then(value => {
-                console.log(value);
+            PushModifyPost({ _id: value._id, type: type, typeofs: "llm" }).then(value => {
+                store.commit('llmsh/ModifyGoodsList', { _id: value._id, type: type })
+                return ElMessage({
+                    message: "修改成功",
+                    type: 'success',
+                })
+            }).catch(err => {
+                return ElMessage({
+                    message: "修改失败",
+                    type: 'error',
+                })
             })
+
+
+
 
         }
 

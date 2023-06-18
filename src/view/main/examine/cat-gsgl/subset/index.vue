@@ -9,10 +9,6 @@
                 <div class="subset-content-left-content">
                     <el-skeleton :rows="5" v-if="!CatGoodsData" />
                     <ul v-else>
-                        <li class="a">
-                            <h1>帖子标题</h1>
-                            <input type="text" :value="CatGoodsData.title" class="lengtn_input" disabled>
-                        </li>
                         <li class="b">
                             <div>
                                 <h1>用户id</h1>
@@ -28,11 +24,11 @@
                             </div>
                         </li>
                         <li class="c">
-                            <h1>帖子简介</h1>
+                            <h1>故事内容</h1>
                             <textarea class="max_imput" :value="CatGoodsData.content" disabled></textarea>
                         </li>
                         <li class="d">
-                            <h1>上传图片</h1>
+                            <h1>上传的封面</h1>
                             <div>
                                 <img v-for="(item, index) in CatGoodsData.imageUrl" :key="index" :src="item" alt="">
                             </div>
@@ -150,7 +146,7 @@ import { useStore } from 'vuex'
 
 
 export default {
-    name: "Cat_LlmglSubmittPage",
+    name: "Cat_GsglLlmshPage",
     setup() {
         let route = useRoute()
         let store = useStore()
@@ -172,7 +168,8 @@ export default {
             pageSize: 11,
             total: 0,
             searchVal: "",
-            type: "examine"
+            type: "examine",
+            typeofs: 'mjgs'
         })// 需要提交接口的参数
 
         let loading = ref(false)// 设loding模块的判断值
@@ -181,7 +178,7 @@ export default {
 
         // // 01 获取当前帖子的数据
         watchEffect(() => {
-            GetCatId({ id: id.value, typeofs: "llm" }).then(({ result }) => {
+            GetCatId({ id: id.value, typeofs: 'mjgs' }).then(({ result }) => {
                 CatGoodsData.value = result.data
             }).catch(err => {
                 CatGoodsData.value = null
@@ -235,7 +232,7 @@ export default {
         // // 03 审核模块
         let passFn = (values, type) => {
             // 这里会传递一个帖子的id是需要通过还是取消的模块
-            PushModifyPost({ _id: values._id, type: type, typeofs: "llm" }).then(value => {
+            PushModifyPost({ _id: values._id, type: type, typeofs: "mjgs" }).then(value => {
                 // 这里我们先将本地的数据获取
                 CatGoodsData.value.type = type
                 CatGoodsData.value.to_examine = type == true ? "pass" : "nopass"
@@ -256,7 +253,7 @@ export default {
         let passFnb = (values, type) => {
             console.log(values._id);
             //表示是需要通过
-            PushModifyPost({ _id: values._id, type: type, typeofs: "llm" }).then(value => {
+            PushModifyPost({ _id: values._id, type: type, typeofs: "mjgs" }).then(value => {
                 store.commit('llmsh/ModifyGoodsList', { _id: values._id, type: type })
                 ElMessage({
                     message: '通过成功',
