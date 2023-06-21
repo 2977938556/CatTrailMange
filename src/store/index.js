@@ -20,6 +20,10 @@ let store = createStore({
         createPersistedstate({
             key: 'user-store',
             paths: ['user']
+        }),
+        createPersistedstate({
+            key: 'sh',
+            paths: ['llmsh']
         })
     ]
 })

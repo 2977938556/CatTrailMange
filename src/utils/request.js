@@ -53,13 +53,17 @@ instance.interceptors.response.use(res => res.data, err => {
         // 基于当前的路径存储在回调地址中
         // MessageJs({ text: `${err.response.data.message}`, type: "error" })
         ElMessage.error('用户信息已过期，请重新登录')
-        if (router.currentRoute.value.fullPath) {
-            const fullPath = encodeURIComponent(router.currentRoute.value.fullPath)
-            router.push('/login?redirectUrl=' + fullPath)
-        } else {
-            router.push('/login')
-        }
+        // if (router.currentRoute.value.fullPath) {
+        //     console.log("进来这里了");
+        //     const fullPath = encodeURIComponent(router.currentRoute.value.fullPath)
+        //     router.push('/login?redirectUrl=' + fullPath)
+        // } else {
+        //     router.push('/login')
+        // }
 
+
+        let fullPath = encodeURIComponent(router.currentRoute.value.fullPath);
+        router.push('/login?redirectUrl=' + fullPath)
     }
 
     return Promise.reject(err)

@@ -111,9 +111,7 @@
                                 </el-table-column>
                                 <el-table-column prop="_id" label="查看">
                                     <template #default="scope">
-
                                         <el-button type="success" @click="GetCatIdData(scope.row._id)">查看</el-button>
-
                                     </template>
                                 </el-table-column>
                             </el-table>

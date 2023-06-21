@@ -8,6 +8,8 @@
 body {
   font-family: 'Source Han Sans SC', 'Microsoft YaHei', sans-serif;
   background: rgba(240, 242, 245, 1);
-
+}
+.el-button{
+  padding: 10px !important;
 }
 </style>

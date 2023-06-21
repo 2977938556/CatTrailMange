@@ -125,16 +125,7 @@ export default {
         // 设置按钮状态的
         let radio1 = ref("全部")
 
-        // 设置header标签的
-        let headerList = ref([
-            { name: "用户名称" },
-            { name: "地区" },
-            { name: "标签" },
-            { name: "状态" },
-            { name: "发布时间" },
-            { name: "审核" },
-            { name: "更多" },
-        ])
+
 
         // 加载的判断值
         let loading = ref(false);
@@ -142,7 +133,6 @@ export default {
 
         let GetCatContent = (val) => {
             store.commit('llmsh/AddId', val)
-
             router.push({
                 name: "llmglsubmit",
             });
@@ -170,10 +160,6 @@ export default {
             }
             return value.slice(0, 10)
         }
-
-
-
-
 
 
 
@@ -258,14 +244,16 @@ export default {
 
         // 审核模块
         let passFn = (value, type) => {
+            console.log(value, type);
             //表示是需要通过
-            PushModifyPost({ _id: value._id, type: type, typeofs: "llm" }).then(value => {
+            PushModifyPost({ _id: value._id, type: type, typeofs: "llm" }).then(values => {
                 store.commit('llmsh/ModifyGoodsList', { _id: value._id, type: type })
                 return ElMessage({
                     message: "修改成功",
                     type: 'success',
                 })
             }).catch(err => {
+                console.log(err);
                 return ElMessage({
                     message: "修改失败",
                     type: 'error',
@@ -278,7 +266,7 @@ export default {
         }
 
 
-        return { radio1, headerList, search, searchFn, radioFn, GoodsList, GetCatContent, pageFn, loading, typeData, FormatTime, tabList, SelectString, passFn }
+        return { radio1, search, searchFn, radioFn, GoodsList, GetCatContent, pageFn, loading, typeData, FormatTime, tabList, SelectString, passFn }
 
 
 

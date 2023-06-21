@@ -24,6 +24,7 @@ import Cat_config from '@/view/main/config/index.vue'// 配置管理
 // 子集页面
 import Cat_LlmglSubmittPage from '@/view/main/examine/cat-llmgl/subset/index.vue'// 流浪猫管理
 import Cat_GsglLlmshPage from '@/view/main/examine/cat-gsgl/subset/index.vue'// 故事管理
+import Cat_HdllSubmitPage from '@/view/main/examine/cat-hdgl/subset/index.vue'// 故事管理
 
 
 
@@ -47,10 +48,14 @@ const routes = [
             },// 流浪猫管理
             {
                 path: 'gsgl', component: Cat_GsglPage, name: 'gsgl', meta: { name: "故事管理", path: '/gsgl' }, children: [
-                    { path: 'gsglsubmit', name: 'gsglsubmit', component: Cat_GsglLlmshPage, meta: { name: '故事管理', path: '/gsglsubmit' } }
+                    { path: 'gsglsubmit', name: 'gsglsubmit', component: Cat_GsglLlmshPage, meta: { name: '故事管理详情界面', path: '/gsglsubmit' } }
                 ]
             },// 故事管理
-            { path: 'hdgl', component: Cat_HdglPage, name: 'hdgl', meta: { name: "活动管理", path: '/hdgl' } },// 活动管理
+            {
+                path: 'hdgl', component: Cat_HdglPage, name: 'hdgl', meta: { name: "活动管理", path: '/hdgl' }, children: [
+                    { path: 'hdglsubmit', name: 'hdglsubmit', component: Cat_HdllSubmitPage, meta: { name: "活动管理详情界面", path: '/hdglsubmit' } }
+                ]
+            },// 活动管理
             { path: 'yhgl', component: Cat_YhglPage, name: 'yhgl', meta: { name: "用户管理", path: '/yhgl' } },// 用户管理
             { path: 'ymzngl', component: Cat_YmznglPage, name: 'ymzngl', meta: { name: "养猫指南管理", path: 'ymzngl' } },// 养猫指南管理
             { path: 'pzgl', component: Cat_config, name: 'pzgl', meta: { name: "配置管理", path: 'pzgl' } },// 配置管理

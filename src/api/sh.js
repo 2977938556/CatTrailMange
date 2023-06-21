@@ -17,3 +17,12 @@ export let PushModifyPost = (data) => {
 export let GetCatId = ({ id, typeofs }) => {
     return request(`/bg/catiddata?id=${id}&typeofs=${typeofs}`, 'get')
 }
+
+
+
+
+
+// 用于提交活动模块的数据
+export let PuhsActivityPost = (data) => {
+    return request('/bg/activity', 'post', data)
+}

@@ -42,7 +42,7 @@ import { ref } from 'vue'
 import { ElMessage, ElNotification } from 'element-plus'
 import { GetUserLogin } from '@/api/login.js'
 import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 export default {
     name: "Login",
     setup() {
@@ -54,6 +54,8 @@ export default {
 
         let store = useStore()
         let router = useRouter()
+        let route = useRoute()
+
 
 
 
@@ -72,7 +74,7 @@ export default {
                 let { result: { data, token } } = await GetUserLogin({ username: username.value, password: password.value })
 
                 store.commit('user/SetUser', { ...data, token })
-                router.push('/')
+                router.push(route.query.redirectUrl || '/')
 
                 return ElMessage({
                     message: `登录成功 ${data.username}`,
