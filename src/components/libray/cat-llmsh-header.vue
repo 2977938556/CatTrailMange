@@ -10,6 +10,10 @@
                 <el-tag class="ml-2" type="success" v-if="catData.to_examine == 'pass'">已通过</el-tag>
                 <el-tag v-else-if="catData.to_examine == 'examine'">待审核</el-tag>
                 <el-tag v-else-if="catData.to_examine == 'nopass'" class="ml-2" type="danger">未通过审核</el-tag>
+                <el-tag v-else-if="catData.to_examine == 'progress'" class="ml-2" type="danger">报名中</el-tag>
+                <el-tag v-else-if="catData.to_examine == 'end'" class="ml-2" type="success">结束</el-tag>
+                <el-tag v-else-if="catData.to_examine == 'cancellation'" class="ml-2" type="info">取消</el-tag>
+                <el-tag v-else-if="catData.to_examine == 'delete'" class="ml-2" type="warning">删除了</el-tag>
                 <el-tag v-else class="ml-2" type="danger">暂无</el-tag>
             </div>
         </div>
@@ -57,7 +61,9 @@ export default {
             flex: 1;
             display: flex;
             align-items: center;
-
+            .el-tag{
+                padding: 10px;
+            }
             // justify-content: center;
             * {
                 margin-left: 10px;

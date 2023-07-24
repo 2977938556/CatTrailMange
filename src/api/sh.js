@@ -20,8 +20,6 @@ export let GetCatId = ({ id, typeofs }) => {
 
 
 
-
-
 // 用于提交活动模块的数据
 export let PuhsActivityPost = (data) => {
     return request('/bg/activity', 'post', data)

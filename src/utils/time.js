@@ -12,11 +12,11 @@ export let FormatTime = (value) => {
 
     const now = new Date();
     const currentYear = now.getFullYear();
-
+    let formattedDate = ""
     if (currentYear !== year) {
-        var formattedDate = year + '.' + month + '.' + day;
+        let formattedDate = year + '.' + month + '.' + day;
     } else {
-        var formattedDate = month + '.' + day;
+        let formattedDate = month + '.' + day;
     }
 
     return formattedDate;
@@ -26,6 +26,8 @@ export let FormatTime = (value) => {
 
 export let FromTimeArrat = (value) => {
     if (!value) return "暂无时间";
+
+    // 这里是获取当前的数据
     const date = new Date(value);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -33,7 +35,19 @@ export let FromTimeArrat = (value) => {
     const hour = String(date.getHours()).padStart(2, '0');
     const minute = String(date.getMinutes()).padStart(2, '0');
     const second = String(date.getSeconds()).padStart(2, '0');
-    var formattedDate = year + '.' + month + '.' + day;
 
-    return formattedDate
+
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    let formattedDate = ""
+
+
+    // 这里的逻辑大致就是如果不等于当前的年份那么就添加年份上去否则就不需要
+    if (currentYear !== year) {
+        formattedDate = year + '.' + month + '.' + day;
+    } else {
+        formattedDate = month + '.' + day;
+    }
+
+    return formattedDate;
 }

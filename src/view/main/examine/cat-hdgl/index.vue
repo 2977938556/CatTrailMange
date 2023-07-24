@@ -11,8 +11,8 @@
                     <el-button type="primary" icon="Plus" @click="visible = true">发布活动</el-button>
                     <!-- 搜索模块 -->
                     <div class="input demo-input-size">
-                        <el-input clearable v-model="typeData.searchVal" class="w-50 m-2" size="large"
-                            placeholder="Please Input" prefix-icon="Search" @blur="searchFn" />
+                        <el-input clearable v-model="search" class="w-50 m-2" size="large" placeholder="Please Input"
+                            prefix-icon="Search" @blur="searchFn" />
                     </div>
                     <!-- 活动发布模块 -->
                     <CatPromptComponent v-model:visible="visible" @onsubmit="onsubmit" title="发布活动">
@@ -63,14 +63,14 @@
 
                 </div>
             </div>
-            <div class="content-box" v-if="GoodsList.length != 0">
+            <div class="content-box">
                 <div class="content-box-table">
                     <!-- 这里是渲染活动列表的 -->
                     <el-table :data="GoodsList" :border=true :stripe="true" v-loading="loading" empty-text="没有数据哦"
                         :default-sort="[{ prop: 'to_examine', order: 'ascending' }]" :sort-by="sortBy" style="width: 100%">
                         <!-- <el-table-column type="index" label="序号" start-index="0"  width="60" /> -->
                         <el-table-column prop="user_id.username" label="活动负责人" />
-                        <el-table-column prop="title" label="活动名称" width="300">
+                        <el-table-column prop="title" label="活动标题" width="300">
                             <template #default="scope">
                                 <el-popover placement="top-start" :width="200" trigger="hover" :content="scope.row.content">
                                     <template #reference>
@@ -280,7 +280,7 @@ export default {
             total: 0,
             searchVal: "",
             type: "whole",
-            typeofs: "hdgl",
+            typeofs: "mjhd",
         })
 
 
@@ -329,7 +329,7 @@ export default {
         // 列表审核
         let passFnb = (row, type) => {
 
-            PushModifyPost({ _id: row._id, type: type, typeofs: "hdgl" }).then(value => {
+            PushModifyPost({ _id: row._id, type: type, typeofs: "mjhd" }).then(value => {
                 store.commit('llmsh/ModifyGoodsList', { _id: row._id, type: type })
                 ElMessage({
                     message: '操作成功',

@@ -123,7 +123,7 @@ export default {
         let router = useRouter()
 
         // 设置按钮状态的
-        let radio1 = ref("全部")
+        let radio1 = ref("待审核")
 
 
 
@@ -176,7 +176,7 @@ export default {
             pageSize: 10,
             total: 0,
             searchVal: "",
-            type: "whole",
+            type: "examine",
             typeofs: "llm",
         })
 

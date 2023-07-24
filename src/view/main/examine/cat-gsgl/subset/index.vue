@@ -152,6 +152,7 @@ export default {
 
         let radio1 = "待审核" // tab模块的默认值
         let id = computed(() => store.state.llmsh.id)// 当前帖子的id
+
         // 这里是获取的帖子的数据
         let CatGoodsData = ref(null)// 用于保存当前帖子的数据
         let tabList = ref([
@@ -177,6 +178,7 @@ export default {
         // // 01 获取当前帖子的数据
         watchEffect(() => {
             GetCatId({ id: id.value, typeofs: 'mjgs' }).then(({ result }) => {
+                console.log("测试数据",result)
                 CatGoodsData.value = result.data
             }).catch(err => {
                 CatGoodsData.value = null
