@@ -81,6 +81,9 @@
                             </div>
                             <div class="right">
                                 <!-- <CatLlmglRadio :radio1="radio1" :tabList="tabList" @changes="radioFn" /> -->
+                                <el-radio-group v-model="radio1" size="large" @change="radioFn">
+                                    <el-radio-button :label="item.name" v-for="item in tabList" :key="item.label" />
+                                </el-radio-group>
                             </div>
                         </div>
                         <div class="subset-content-table">
@@ -124,33 +127,36 @@
                                 <el-table-column prop="to_examine" label="操作" width="240">
                                     <template #default="scope">
                                         <div v-if="scope.row.to_examine === 'progress'">
-                                            <el-popconfirm title="结束活动" @confirm="passFnb(scope.row, 'end')" disabled>
+                                            <el-popconfirm title="结束活动" @confirm="passFnb(scope.row, 'end')">
                                                 <template #reference>
-                                                    <el-button size="small" type="primary"
+                                                    <el-button size="small" type="primary" :plain="true"
                                                         icon="CircleCloseFilled">结束</el-button>
                                                 </template>
                                             </el-popconfirm>
-                                            <el-popconfirm title="取消活动" @confirm="passFnb(scope.row, 'cancellation')"
-                                                disabled>
+                                            <el-popconfirm title="取消活动" @confirm="passFnb(scope.row, 'cancellation')">
                                                 <template #reference>
-                                                    <el-button size="small" icon="Close" type="info">取消</el-button>
+                                                    <el-button size="small" :plain="true" icon="Close"
+                                                        type="info">取消</el-button>
                                                 </template>
                                             </el-popconfirm>
-                                            <el-popconfirm title="删除活动" @confirm="passFnb(scope.row, 'delete')" disabled>
+                                            <el-popconfirm title="删除活动" @confirm="passFnb(scope.row, 'delete')">
                                                 <template #reference>
-                                                    <el-button size="small" type="warning" icon="Select">删除</el-button>
+                                                    <el-button :plain="true" size="small" type="warning"
+                                                        icon="Select">删除</el-button>
                                                 </template>
                                             </el-popconfirm>
                                         </div>
                                         <div v-if="scope.row.to_examine === 'end'">
-                                            <el-button size="small" type="success" icon="CircleCloseFilled"
+                                            <el-button size="small" :plain="true" type="success" icon="CircleCloseFilled"
                                                 disabled>结束</el-button>
                                         </div>
                                         <div v-if="scope.row.to_examine === 'cancellation'">
-                                            <el-button size="small" icon="Close" type="info" disabled>取消</el-button>
+                                            <el-button size="small" :plain="true" icon="Close" type="info"
+                                                disabled>取消</el-button>
                                         </div>
                                         <div v-if="scope.row.to_examine === 'delete'">
-                                            <el-button size="small" icon="Delete" type="warning" disabled>删除活动</el-button>
+                                            <el-button size="small" :plain="true" icon="Delete" type="warning"
+                                                disabled>删除活动</el-button>
                                         </div>
                                     </template>
                                 </el-table-column>
@@ -195,15 +201,18 @@ export default {
         let store = useStore()
 
 
-        let radio1 = "待审核" // tab模块的默认值
+        let radio1 = "全部" // tab模块的默认值
         let id = computed(() => store.state.llmsh.id)// 当前帖子的id
         // 这里是获取的帖子的数据
         let CatGoodsData = ref(null)// 用于保存当前帖子的数据
+        // tab 数据模块
         let tabList = ref([
             { name: "全部", label: "whole" },
-            { name: "待审核", label: "examine" },
-            { name: "未通过", label: "nopass" },
-        ])// 渲染tab模块的
+            { name: "报名中", label: "progress" },
+            { name: "结束", label: "end" },
+            { name: "取消", label: "cancellation" },
+            { name: "删除", label: "delete" },
+        ])
 
         const defaultTime = new Date(2000, 1, 1, 12, 0, 0)
 
@@ -290,9 +299,9 @@ export default {
         // // 03 审核模块
         let passFn = (values, type) => {
             // 这里会传递一个帖子的id是需要通过还是取消的模块
-            PushModifyPost({ _id: values._id, type: type, typeofs: "mjhd" }).then(value => {
-                // 这里我们先将本地的数据获取
-                CatGoodsData.value.type = type
+            PushModifyPost({ _id: values._id, type: type, typeofs: "mjhd" }).then(({ result: { data } }) => {
+                store.commit('llmsh/ModifyGoodsList', data)
+                // // 这里我们先将本地的数据获取
                 CatGoodsData.value.to_examine = type
                 ElMessage({
                     message: '操作成功',
@@ -311,11 +320,13 @@ export default {
 
         // // 05 这个是列表审核页面
 
-
-
         let passFnb = (row, type) => {
-            PushModifyPost({ _id: row._id, type: type, typeofs: "hdgl" }).then(value => {
-                store.commit('llmsh/ModifyGoodsList', { _id: row._id, type: type })
+            PushModifyPost({ _id: row._id, type: type, typeofs: "mjhd" }).then(({ result: { data } }) => {
+                store.commit('llmsh/ModifyGoodsList', data)
+                if (data._id === CatGoodsData.value._id) {
+                    CatGoodsData.value.to_examine = type
+                }
+
                 ElMessage({
                     message: '操作成功',
                     type: 'success',
@@ -323,7 +334,7 @@ export default {
             }).catch(err => {
                 console.log(err);
                 ElMessage({
-                    message: '操作成功',
+                    message: '操作失败',
                     type: 'error',
                 })
             })

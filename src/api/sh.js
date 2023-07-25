@@ -7,7 +7,7 @@ export let GetBgData = (data) => {
     return request('/bg/shdata', 'post', data)
 }
 
-// 这个是用于用户进行是否审核通过该帖子
+//  审核帖子模块
 export let PushModifyPost = (data) => {
     return request('/bg/catpass', 'post', data)
 }
@@ -23,4 +23,11 @@ export let GetCatId = ({ id, typeofs }) => {
 // 用于提交活动模块的数据
 export let PuhsActivityPost = (data) => {
     return request('/bg/activity', 'post', data)
+}
+
+
+
+// 提交养猫指南模块
+export let PushgUuidePost = (data) => {
+    return request('/bg/pushGuide', 'post', data)
 }

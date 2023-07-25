@@ -10,33 +10,15 @@ export default {
     mutations: {
         // 添加数据的模块
         AddGoodsList(state, payload = []) {
+            state.GoodsList = []
             state.GoodsList = payload
         },
         // 审核模块
         ModifyGoodsList(state, payload) {
-            let { _id, type } = payload
-
-            if (typeof type === 'boolean') {
-                if (type) {
-                    let data = state.GoodsList.find(item => item._id == _id)
-                    data.to_examine = "pass"
-                    data.isApproved = true
-                } else {
-                    let data = state.GoodsList.find(item => item._id == _id)
-                    data.to_examine = "nopass"
-                    data.isApproved = true
-                }
-            } else if (typeof type === 'string') {
-                let data = state.GoodsList.find(item => item._id == _id)
-                data.to_examine = type
+            const index = state.GoodsList.findIndex(item => item._id === payload._id);
+            if (index >= 0) {
+                state.GoodsList.splice(index, 1, payload);
             }
-
-
-
-
-
-
-
         },
         // 设置状态参数
         AddId(state, payload) {

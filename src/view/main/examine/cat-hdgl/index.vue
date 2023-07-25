@@ -7,13 +7,18 @@
                     <p>测试</p>
                 </div>
                 <div class="right">
-                    <!-- 发布活动模块 -->
-                    <el-button type="primary" icon="Plus" @click="visible = true">发布活动</el-button>
+
                     <!-- 搜索模块 -->
                     <div class="input demo-input-size">
                         <el-input clearable v-model="search" class="w-50 m-2" size="large" placeholder="Please Input"
                             prefix-icon="Search" @blur="searchFn" />
                     </div>
+                    <!-- 发布活动模块 -->
+                    <el-button type="primary" size="large" icon="Plus" @click="visible = true">发布指南</el-button>
+                    <!-- <el-button type="primary" icon="Plus"  @click="visible = true">发布活动</el-button> -->
+                    <el-radio-group v-model="radio1" size="large" @change="radioFn">
+                        <el-radio-button :label="item.name" v-for="item in tabList" :key="item.label" />
+                    </el-radio-group>
                     <!-- 活动发布模块 -->
                     <CatPromptComponent v-model:visible="visible" @onsubmit="onsubmit" title="发布活动">
                         <template #content>
@@ -74,21 +79,21 @@
                             <template #default="scope">
                                 <el-popover placement="top-start" :width="200" trigger="hover" :content="scope.row.content">
                                     <template #reference>
-                                        {{ scope.row.content.slice(0, 16) + '...' }}
+                                        {{ scope.row.content?.slice(0, 16) + '...' }}
                                     </template>
                                 </el-popover>
                             </template>
                         </el-table-column>
                         <el-table-column prop="time" label="活动时间">
                             <template #default="scope">
-                                {{ FromTimeArrat(scope.row.time[0]) }}-
-                                {{ FromTimeArrat(scope.row.time[1]) }}
+                                <!-- {{ `${FromTimeArrat(scope.row.time[0])}-${FromTimeArrat(scope.row.time[1])}` }} -->
                             </template>
                         </el-table-column>
                         <el-table-column prop="people" label="报名人数">
                             <template #default="scope">
                                 <h5 style="color: rgba(255, 124, 0, 1);">{{
-                                    `已报名(${scope.row.participant.length})/计划:${scope.row.people}` }}</h5>
+                                    `已报名(${scope?.row?.clickCount})/计划:${scope.row.people}` }}</h5>
+                                <!-- {{  }} -->
                             </template>
                         </el-table-column>
                         <el-table-column prop="to_examine" label="活动状态" sortable>
@@ -105,28 +110,32 @@
                                 <div v-if="scope.row.to_examine === 'progress'">
                                     <el-popconfirm title="结束活动" @confirm="passFnb(scope.row, 'end')">
                                         <template #reference>
-                                            <el-button size="small" type="primary" icon="CircleCloseFilled">结束</el-button>
+                                            <el-button size="small" type="primary" :plain="true"
+                                                icon="CircleCloseFilled">结束</el-button>
                                         </template>
                                     </el-popconfirm>
                                     <el-popconfirm title="取消活动" @confirm="passFnb(scope.row, 'cancellation')">
                                         <template #reference>
-                                            <el-button size="small" icon="Close" type="info">取消</el-button>
+                                            <el-button size="small" :plain="true" icon="Close" type="info">取消</el-button>
                                         </template>
                                     </el-popconfirm>
                                     <el-popconfirm title="删除活动" @confirm="passFnb(scope.row, 'delete')">
                                         <template #reference>
-                                            <el-button size="small" type="warning" icon="Select">删除</el-button>
+                                            <el-button :plain="true" size="small" type="warning"
+                                                icon="Select">删除</el-button>
                                         </template>
                                     </el-popconfirm>
                                 </div>
                                 <div v-if="scope.row.to_examine === 'end'">
-                                    <el-button size="small" type="success" icon="CircleCloseFilled" disabled>结束</el-button>
+                                    <el-button size="small" :plain="true" type="success" icon="CircleCloseFilled"
+                                        disabled>结束</el-button>
                                 </div>
                                 <div v-if="scope.row.to_examine === 'cancellation'">
-                                    <el-button size="small" icon="Close" type="info" disabled>取消</el-button>
+                                    <el-button size="small" :plain="true" icon="Close" type="info" disabled>取消</el-button>
                                 </div>
                                 <div v-if="scope.row.to_examine === 'delete'">
-                                    <el-button size="small" icon="Delete" type="warning" disabled>删除活动</el-button>
+                                    <el-button size="small" :plain="true" icon="Delete" type="warning"
+                                        disabled>删除活动</el-button>
                                 </div>
                             </template>
                         </el-table-column>
@@ -196,6 +205,26 @@ export default {
             GetBgDataFn()
         }
 
+        // 设置按钮状态的
+        let radio1 = ref("报名中")
+
+        // tab 数据模块
+        let tabList = ref([
+            { name: "全部", label: "whole" },
+            { name: "报名中", label: "progress" },
+            { name: "结束", label: "end" },
+            { name: "取消", label: "cancellation" },
+            { name: "删除", label: "delete" },
+        ])
+
+        // 这个是筛选按钮的模块
+        let radioFn = (val) => {
+            // 这里查询到数据并赋予 最后重新发送请求获取数据
+            let index = tabList.value.findIndex(item => item.name == val)
+            typeData.type = tabList.value[index].label
+            typeData.page = 1
+            GetBgDataFn()
+        }
 
 
         //  发布模块需要提交的数据
@@ -326,19 +355,17 @@ export default {
 
 
 
-        // 列表审核
-        let passFnb = (row, type) => {
+        // 审核模块
+        let passFnb = (value, type) => {
+            //表示是需要通过
+            // 这里传递的都是一些参数
+            PushModifyPost({ _id: value._id, type: type, typeofs: "mjhd" }).then(({ result: { data } }) => {
+                store.commit('llmsh/ModifyGoodsList', data)
 
-            PushModifyPost({ _id: row._id, type: type, typeofs: "mjhd" }).then(value => {
-                store.commit('llmsh/ModifyGoodsList', { _id: row._id, type: type })
-                ElMessage({
-                    message: '操作成功',
-                    type: 'success',
-                })
             }).catch(err => {
                 console.log(err);
-                ElMessage({
-                    message: '操作成功',
+                return ElMessage({
+                    message: "修改失败",
                     type: 'error',
                 })
             })
@@ -350,11 +377,7 @@ export default {
 
 
 
-
-
-
-
-        return { searchFn, search, visible, FromTimeArrat, onsubmit, sortBy, defaultTime, imgUpdata, pageFn, FormatTime, HdFromData, loading, typeData, GoodsList, GetCatContent, passFnb }
+        return { searchFn, radioFn, radio1, tabList, search, visible, FromTimeArrat, radioFn, onsubmit, sortBy, defaultTime, imgUpdata, pageFn, FormatTime, HdFromData, loading, typeData, GoodsList, GetCatContent, passFnb }
     }
 
 
@@ -419,10 +442,11 @@ export default {
             }
 
             .right {
-                flex: 0.3;
+                flex: 0.5;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                // border: 1px solid red;
 
                 .el-button {
                     // margin-left: 20px  ;

@@ -20,7 +20,7 @@ export default {
     },
     setup(props, { emit }) {
         let radio1 = ref(props.radio1);
-        
+
         let radioFn = (value) => {
             emit("changes", value)
         }
@@ -30,3 +30,11 @@ export default {
 }
 
 </script>
+
+<style lang="less" scoped>
+div {
+    // border: 1px solid red;
+}
+</style>
+
+

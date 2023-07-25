@@ -7,12 +7,8 @@
         <div class="subset-content">
             <div class="subset-content-left">
                 <div class="subset-content-left-content">
-                    <el-skeleton :rows="5" v-if="!CatGoodsData" />
+                    <el-skeleton :rows="5" v-if="!CatGoodsData" animated />
                     <ul v-else>
-                        <li class="a">
-                            <h1>帖子标题</h1>
-                            <input type="text" :value="CatGoodsData.title" class="lengtn_input" disabled>
-                        </li>
                         <li class="b">
                             <div>
                                 <h1>用户id</h1>
@@ -28,11 +24,11 @@
                             </div>
                         </li>
                         <li class="c">
-                            <h1>帖子简介</h1>
+                            <h1>故事内容</h1>
                             <textarea class="max_imput" :value="CatGoodsData.content" disabled></textarea>
                         </li>
                         <li class="d">
-                            <h1>上传图片</h1>
+                            <h1>上传的封面</h1>
                             <div>
                                 <img v-for="(item, index) in CatGoodsData.imageUrl" :key="index" :src="item" alt="">
                             </div>
@@ -81,15 +77,9 @@
 
                                 <!-- 这里是已下线的状态 -->
                                 <div v-else-if="CatGoodsData.to_examine == 'offine'">
-                                    <el-popconfirm title="上线" @confirm="passFn(CatGoodsData, 'pass')">
+                                    <el-popconfirm title="是否不通过该帖子" @confirm="passFn(CatGoodsData, 'pass')">
                                         <template #reference>
                                             <el-button size="small" :plain="true" icon="CloseBold">上线</el-button>
-                                        </template>
-                                    </el-popconfirm>
-                                    <el-popconfirm title="是否不通过该帖子" @confirm="passFn(CatGoodsData, 'delete')">
-                                        <template #reference>
-                                            <el-button size="small" type="danger" :plain="true"
-                                                icon="CloseBold">删除</el-button>
                                         </template>
                                     </el-popconfirm>
                                 </div>
@@ -102,14 +92,11 @@
                                         </template>
                                     </el-popconfirm>
                                 </div>
-
                             </div>
                         </li>
                     </ul>
                 </div>
             </div>
-
-
             <div class="subset-content-right">
                 <div class="subset-content-right-list">
                     <div class="submit-center">
@@ -123,23 +110,18 @@
                         </div>
 
                         <div class="subset-content-table">
-                            <el-table :data="GoodsList" :border=true :stripe="true" v-loading="loading" empty-text="没有数据哦"
-                                :default-sort="[{ prop: 'updated_at', order: 'ascending' }, { prop: 'to_examine', order: 'ascending' }]"
-                                style="width: 100%">
-                                <el-table-column prop="user_id.username" label="用户名称" />
-                                <el-table-column prop="to_examine" label="状态" sortable
-                                    :sort-by="['pass', 'examine', 'danger']">
+                            <el-table :data="GoodsList" stripe style="width: 100%" v-loading="loading" empty-text="没有数据哦">
+                                <el-table-column prop="user_id.username" label="作者名称" width="180" />
+                                <el-table-column prop="updated_at" label="发布时间" :formatter="FormatTime" />
+                                <el-table-column prop="isApproved" label="状态">
                                     <template #default="scope">
                                         <el-tag class="ml-2" type="success"
-                                            v-if="scope.row.to_examine == 'pass'">在线</el-tag>
-                                        <el-tag type="info" v-else-if="scope.row.to_examine == 'examine'">待审核</el-tag>
-                                        <el-tag type="danger" v-else-if="scope.row.to_examine == 'nopass'">未通过</el-tag>
-                                        <el-tag type="warning" v-else-if="scope.row.to_examine == 'offine'">下线</el-tag>
-                                        <el-tag type="danger" v-else-if="scope.row.to_examine == 'delete'">已删除</el-tag>
+                                            v-if="scope.row.to_examine == 'pass'">已通过</el-tag>
+                                        <el-tag v-else-if="scope.row.to_examine == 'examine'">待审核</el-tag>
+                                        <el-tag v-else class="ml-2" type="danger">未通过审核</el-tag>
                                     </template>
                                 </el-table-column>
-                                <el-table-column prop="updated_at" label="发布时间" sortable :formatter="FormatTime" />
-                                <el-table-column prop="to_examine" label="审核" class="examine" width="500px" sortable>
+                                <el-table-column prop="to_examine" label="操作" width="300">
                                     <template #default="scope">
                                         <div class="btn">
                                             <!-- 这里是已经审核通过的模块 -->
@@ -183,16 +165,10 @@
 
                                             <!-- 这里是已下线的状态 -->
                                             <div v-else-if="scope.row.to_examine == 'offine'">
-                                                <el-popconfirm title="上线" @confirm="passFnb(scope.row, 'pass')">
+                                                <el-popconfirm title="是否不通过该帖子" @confirm="passFnb(scope.row, 'pass')">
                                                     <template #reference>
                                                         <el-button size="small" :plain="true"
                                                             icon="CloseBold">上线</el-button>
-                                                    </template>
-                                                </el-popconfirm>
-                                                <el-popconfirm title="是否不通过该帖子" @confirm="passFnb(scope.row, 'delete')">
-                                                    <template #reference>
-                                                        <el-button size="small" type="danger" :plain="true"
-                                                            icon="CloseBold">删除</el-button>
                                                     </template>
                                                 </el-popconfirm>
                                             </div>
@@ -206,11 +182,10 @@
                                                     </template>
                                                 </el-popconfirm>
                                             </div>
-
                                         </div>
                                     </template>
                                 </el-table-column>
-                                <el-table-column prop="more" label="更多">
+                                <el-table-column prop="_id" label="查看">
                                     <template #default="scope">
                                         <el-button type="success" @click="GetCatIdData(scope.row._id)">查看</el-button>
                                     </template>
@@ -245,7 +220,7 @@ import { useStore } from 'vuex'
 
 
 export default {
-    name: "Cat_LlmglSubmittPage",
+    name: "Cat_GsglLlmshPage",
     setup() {
         let route = useRoute()
         let store = useStore()
@@ -253,8 +228,10 @@ export default {
 
         let radio1 = "全部" // tab模块的默认值
         let id = computed(() => store.state.llmsh.id)// 当前帖子的id
+
         // 这里是获取的帖子的数据
         let CatGoodsData = ref(null)// 用于保存当前帖子的数据
+        // tab 数据模块
         let tabList = ref([
             { name: "全部", label: "whole" },
             { name: "待审核", label: "examine" },
@@ -271,8 +248,7 @@ export default {
             total: 0,
             searchVal: "",
             type: "whole",
-            typeofs: "llm",
-
+            typeofs: 'ymzn'
         })// 需要提交接口的参数
 
         let loading = ref(false)// 设loding模块的判断值
@@ -281,7 +257,8 @@ export default {
 
         // // 01 获取当前帖子的数据
         watchEffect(() => {
-            GetCatId({ id: id.value, typeofs: "llm" }).then(({ result }) => {
+            GetCatId({ id: id.value, typeofs: 'ymzn' }).then(({ result }) => {
+                console.log("测试数据", result)
                 CatGoodsData.value = result.data
             }).catch(err => {
                 CatGoodsData.value = null
@@ -333,37 +310,42 @@ export default {
         }
 
         // // 03 审核模块
-        let passFn = (value, type) => {
-            //表示是需要通过
-            // 这里传递的都是一些参数
-            PushModifyPost({ _id: value._id, type: type, typeofs: "llm" }).then(({ result: { data } }) => {
-                store.commit('llmsh/ModifyGoodsList', data)
-                CatGoodsData.value.to_examine = type
+        let passFn = (values, type) => {
+            // 这里会传递一个帖子的id是需要通过还是取消的模块
+            PushModifyPost({ _id: values._id, type: type, typeofs: "ymzn" }).then(value => {
+                store.commit('llmsh/ModifyGoodsList', { _id: values._id, type: type })
+                CatGoodsData.to_examine = type
+                ElMessage({
+                    message: '操作成功',
+                    type: 'success',
+                })
             }).catch(err => {
                 console.log(err);
-                return ElMessage({
-                    message: "修改失败",
-                    type: 'error',
+                ElMessage({
+                    message: '操作失败',
+                    type: 'warning',
                 })
             })
         }
 
         // // 05 这个是列表审核页面
-        let passFnb = (value, type) => {
+        let passFnb = (values, type) => {
+            console.log(values._id);
             //表示是需要通过
-            // 这里传递的都是一些参数
-            PushModifyPost({ _id: value._id, type: type, typeofs: "llm" }).then(({ result: { data } }) => {
-
-                console.log("测试的值");
+            PushModifyPost({ _id: values._id, type: type, typeofs: "ymzn" }).then(({ result: { data } }) => {
                 store.commit('llmsh/ModifyGoodsList', data)
-                return ElMessage({
-                    message: "修改成功",
+
+                if (data._id === CatGoodsData.value._id) {
+                    CatGoodsData.value.to_examine = type
+                }
+                ElMessage({
+                    message: '通过成功',
                     type: 'success',
                 })
             }).catch(err => {
                 console.log(err);
-                return ElMessage({
-                    message: "修改失败",
+                ElMessage({
+                    message: '审核失败了',
                     type: 'error',
                 })
             })
@@ -391,16 +373,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
-* div {
-    // border: 1px solid red;
-}
+* div {}
 
 .subset {
     width: 98%;
     margin: 20px auto;
     height: 89%;
-
-
 
     // 内容区域
     .subset-content {

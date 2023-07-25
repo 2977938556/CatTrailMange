@@ -1,8 +1,10 @@
 export let FormatTime = (value) => {
-    let time = value.updated_at;
+    let time = value.updated_at || value.created_at
     if (!time) return "暂无时间";
 
+
     const date = new Date(time);
+
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
@@ -14,9 +16,9 @@ export let FormatTime = (value) => {
     const currentYear = now.getFullYear();
     let formattedDate = ""
     if (currentYear !== year) {
-        let formattedDate = year + '.' + month + '.' + day;
+        formattedDate = year + '.' + month + '.' + day;
     } else {
-        let formattedDate = month + '.' + day;
+        formattedDate = month + '.' + day;
     }
 
     return formattedDate;
@@ -24,8 +26,10 @@ export let FormatTime = (value) => {
 
 
 
+// 这个是设置时间的模块
 export let FromTimeArrat = (value) => {
     if (!value) return "暂无时间";
+
 
     // 这里是获取当前的数据
     const date = new Date(value);

@@ -47,37 +47,79 @@
                         </el-table-column>
                         <el-table-column prop="to_examine" label="状态" sortable :sort-by="['pass', 'examine', 'danger']">
                             <template #default="scope">
-                                <el-tag class="ml-2" type="success" v-if="scope.row.to_examine == 'pass'">已通过</el-tag>
-                                <el-tag v-else-if="scope.row.to_examine == 'examine'">待审核</el-tag>
-                                <el-tag v-else class="ml-2" type="danger">未通过审核</el-tag>
+                                <el-tag class="ml-2" type="success" v-if="scope.row.to_examine == 'pass'">在线</el-tag>
+                                <el-tag type="info" v-else-if="scope.row.to_examine == 'examine'">待审核</el-tag>
+                                <el-tag type="danger" v-else-if="scope.row.to_examine == 'nopass'">未通过</el-tag>
+                                <el-tag type="warning" v-else-if="scope.row.to_examine == 'offine'">下线</el-tag>
+                                <el-tag type="danger" v-else-if="scope.row.to_examine == 'delete'">已删除</el-tag>
                             </template>
                         </el-table-column>
                         <el-table-column prop="updated_at" label="发布时间" sortable :formatter="FormatTime" />
-                        <el-table-column prop="to_examine" label="审核" class="examine" width="200" sortable
-                            :sort-by="['examine', 'nopass', 'pass']">
+                        <el-table-column prop="to_examine" label="审核" class="examine" width="500px" sortable>
                             <template #default="scope">
                                 <div class="btn">
                                     <!-- 这里是已经审核通过的模块 -->
                                     <div v-if="scope.row.to_examine == 'pass'">
-                                        <el-button type="success" disabled>已通过</el-button>
+                                        <el-popconfirm title="是否下线该帖子" @confirm="passFnb(scope.row, 'offine')">
+                                            <template #reference>
+                                                <el-button :plain="true" type="success">下线</el-button>
+                                            </template>
+                                        </el-popconfirm>
                                     </div>
                                     <!-- 这里是待审核的状态 -->
                                     <div v-else-if="scope.row.to_examine == 'examine'">
-                                        <el-popconfirm title="是否通过该帖子" @confirm="passFn(scope.row, true)">
+                                        <el-popconfirm title="是否通过该帖子" @confirm="passFnb(scope.row, 'pass')">
                                             <template #reference>
-                                                <el-button type="primary" icon="Select">通过</el-button>
+                                                <el-button size="small" :plain="true" type="primary"
+                                                    icon="Select">通过</el-button>
                                             </template>
                                         </el-popconfirm>
-                                        <el-popconfirm title="是否通过该帖子" @confirm="passFn(scope.row, false)">
+                                        <el-popconfirm title="是否不通过该帖子" @confirm="passFnb(scope.row, 'nopass')">
                                             <template #reference>
-                                                <el-button type="danger" icon="CloseBold">不通过</el-button>
+                                                <el-button size="small" :plain="true" type="info"
+                                                    icon="CloseBold">不通过</el-button>
                                             </template>
                                         </el-popconfirm>
-
+                                        <el-popconfirm title="是否删除该帖子" @confirm="passFnb(scope.row, 'delete')">
+                                            <template #reference>
+                                                <el-button size="small" :plain="true" type="danger"
+                                                    icon="CloseBold">删除</el-button>
+                                            </template>
+                                        </el-popconfirm>
                                     </div>
-                                    <!-- 这里是审核未通过的模块 -->
-                                    <div v-else>
-                                        <el-button type="danger" icon="Delete" disabled>未通过</el-button>
+                                    <!-- 这里是未通过状态 -->
+                                    <div v-else-if="scope.row.to_examine == 'nopass'">
+                                        <el-popconfirm title="是否不通过该帖子" @confirm="passFnb(scope.row, 'delete')">
+                                            <template #reference>
+                                                <el-button size="small" :plain="true" type="danger"
+                                                    icon="CloseBold">删除</el-button>
+                                            </template>
+                                        </el-popconfirm>
+                                    </div>
+
+                                    <!-- 这里是已下线的状态 -->
+                                    <div v-else-if="scope.row.to_examine == 'offine'">
+                                        <el-popconfirm title="上线" @confirm="passFnb(scope.row, 'pass')">
+                                            <template #reference>
+                                                <el-button size="small" :plain="true" icon="CloseBold">上线</el-button>
+                                            </template>
+                                        </el-popconfirm>
+                                        <el-popconfirm title="是否不通过该帖子" @confirm="passFnb(scope.row, 'delete')">
+                                            <template #reference>
+                                                <el-button size="small" type="danger" :plain="true"
+                                                    icon="CloseBold">删除</el-button>
+                                            </template>
+                                        </el-popconfirm>
+                                    </div>
+
+                                    <!-- 这里是已删除 -->
+                                    <div v-else-if="scope.row.to_examine == 'delete'">
+                                        <el-popconfirm title="是否通过该帖子" @confirm="passFnb(scope.row, 'examine')">
+                                            <template #reference>
+                                                <el-button size="small" type="info" :plain="true"
+                                                    icon="Select">恢复</el-button>
+                                            </template>
+                                        </el-popconfirm>
                                     </div>
 
                                 </div>
@@ -131,6 +173,7 @@ export default {
         let loading = ref(false);
 
 
+        // 这个是点击发送数据
         let GetCatContent = (val) => {
             store.commit('llmsh/AddId', val)
             router.push({
@@ -187,9 +230,12 @@ export default {
         let tabList = ref([
             { name: "全部", label: "whole" },
             { name: "待审核", label: "examine" },
-            { name: "通过", label: "pass" },
+            { name: "在线", label: "pass" },
             { name: "未通过", label: "nopass" },
+            { name: "下线", label: "offine" },
+            { name: "删除", label: "delete" },
         ])
+
 
         // 这个是筛选按钮的模块
         let radioFn = (val) => {
@@ -205,7 +251,6 @@ export default {
         let GetBgDataFn = () => {
             loading.value = true;
             GetBgData(typeData).then(({ result }) => {
-                console.log("数据", result);
                 // 将数据给响应性数据的变量
                 // GoodsList.value = result.data
                 store.commit('llmsh/AddGoodsList', result.data)
@@ -243,15 +288,14 @@ export default {
 
 
         // 审核模块
-        let passFn = (value, type) => {
-            console.log(value, type);
+        let passFnb = (value, type) => {
             //表示是需要通过
-            PushModifyPost({ _id: value._id, type: type, typeofs: "llm" }).then(values => {
-                store.commit('llmsh/ModifyGoodsList', { _id: value._id, type: type })
-                return ElMessage({
-                    message: "修改成功",
-                    type: 'success',
-                })
+            // 这里传递的都是一些参数
+            PushModifyPost({ _id: value._id, type: type, typeofs: "llm" }).then(({ result: { data } }) => {
+                store.commit('llmsh/ModifyGoodsList', data)
+
+
+
             }).catch(err => {
                 console.log(err);
                 return ElMessage({
@@ -259,14 +303,10 @@ export default {
                     type: 'error',
                 })
             })
-
-
-
-
         }
 
 
-        return { radio1, search, searchFn, radioFn, GoodsList, GetCatContent, pageFn, loading, typeData, FormatTime, tabList, SelectString, passFn }
+        return { radio1, search, searchFn, radioFn, GoodsList, GetCatContent, passFnb, pageFn, loading, typeData, FormatTime, tabList, SelectString }
 
 
 

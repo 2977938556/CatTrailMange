@@ -22,9 +22,11 @@ import Cat_config from '@/view/main/config/index.vue'// 配置管理
 
 
 // 子集页面
-import Cat_LlmglSubmittPage from '@/view/main/examine/cat-llmgl/subset/index.vue'// 流浪猫管理
-import Cat_GsglLlmshPage from '@/view/main/examine/cat-gsgl/subset/index.vue'// 故事管理
-import Cat_HdllSubmitPage from '@/view/main/examine/cat-hdgl/subset/index.vue'// 故事管理
+import Cat_LlmglSubmittPage from '@/view/main/examine/cat-llmgl/subset/index.vue'// 流浪猫管详情页面
+import Cat_GsglLlmshPage from '@/view/main/examine/cat-gsgl/subset/index.vue'// 故事管理详情页面
+import Cat_HdllSubmitPage from '@/view/main/examine/cat-hdgl/subset/index.vue'// 故事管理详情页面
+import Cat_YmznSubmitPafge from '@/view/main/examine/cat-ymzn/subset/index.vue'// 养猫指南管理详情页面
+import Cat_YhglSubmit from '@/view/main/examine/cat-yhgl/subset/index.vue' // 用户管详情
 
 
 
@@ -56,8 +58,16 @@ const routes = [
                     { path: 'hdglsubmit', name: 'hdglsubmit', component: Cat_HdllSubmitPage, meta: { name: "活动管理详情界面", path: '/hdglsubmit' } }
                 ]
             },// 活动管理
-            { path: 'yhgl', component: Cat_YhglPage, name: 'yhgl', meta: { name: "用户管理", path: '/yhgl' } },// 用户管理
-            { path: 'ymzngl', component: Cat_YmznglPage, name: 'ymzngl', meta: { name: "养猫指南管理", path: 'ymzngl' } },// 养猫指南管理
+            {
+                path: 'ymzngl', component: Cat_YmznglPage, name: 'ymzngl', meta: { name: "养猫指南管理", path: 'ymzngl' }, children: [
+                    { path: 'ymznsubmit', name: 'ymznsubmit', component: Cat_YmznSubmitPafge, meta: { name: '养猫指南详情', path: '/ymznsubmit' } }
+                ]
+            },// 养猫指南管理
+            {
+                path: 'yhgl', component: Cat_YhglPage, name: 'yhgl', meta: { name: "用户管理", path: '/yhgl' }, children: [
+                    { path: "yhglsubmit", name: 'yhglsubmit', component: Cat_YhglSubmit, meta: { name: "用户详情页面", path: "/yhglsubmit" } }
+                ]
+            },// 用户管理
             { path: 'pzgl', component: Cat_config, name: 'pzgl', meta: { name: "配置管理", path: 'pzgl' } },// 配置管理
         ]
     }, {
