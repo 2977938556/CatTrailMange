@@ -2,7 +2,6 @@
     <div class="menu">
         <el-row class="tac">
             <el-col :span="24">
-
                 <div class="logo">
                     <img src="../../assets/image/cat-logo@1x.png" alt="">
                     <span>后台管理</span>
@@ -101,10 +100,21 @@ export default {
                 ]
             },
             {
-                icon: "Tools",
+                icon: "Avatar",
                 label: "配置管理",
-                name: "pzgl",
-                path: "/pzgl",
+                path: 'config',
+                children: [
+                    {
+                        label: "轮播图管理",
+                        name: "homebannr",
+                        path: "/homebannr",
+                    },
+                    {
+                        label: "通知管理",
+                        name: "tzmessage",
+                        path: "/tzmessage",
+                    }
+                ]
             }
         ])
 
@@ -198,15 +208,17 @@ el-menu-item.is-active,
 }
 
 
-//对应子级，父级的样式
+// //对应子级，父级的样式
 // .el-submenu.is-active>.el-submenu__title {
 //     background: rgb(206, 169, 181) !important;
+//     background: red !important;
 // }
 
 // //当前选中子级的样式
 // .is-active {
 //     color: #ffd04b !important;
 //     background: rgb(42, 62, 77) !important;
+//     background: red !important;
 // }
 
 // Logo标志
@@ -218,12 +230,9 @@ el-menu-item.is-active,
     justify-content: center;
 
     span {
-        margin-left: 7px;
-        margin-top: 5px;
+        margin-left: 10px;
         display: block;
-        width: auto;
         width: 42px;
-        height: 18px;
         opacity: 1;
         border-radius: 8px;
         background: rgba(255, 124, 0, 1);
@@ -234,6 +243,7 @@ el-menu-item.is-active,
         /** 文本1 */
         font-size: 10px;
         font-weight: 500;
+        text-align: center;
         letter-spacing: 0px;
         cursor: pointer;
         color: rgba(255, 255, 255, 1);

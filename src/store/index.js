@@ -7,12 +7,14 @@ import createPersistedstate from 'vuex-persistedstate'
 import header from '@/store/modules/header.js'// header模块
 import user from '@/store/modules/user.js'// 用户登录模块 模块
 import llmsh from '@/store/modules/llmsh.js'// 流浪猫审核
+import config from '@/store/modules/config.js'// 配置模块
 
 let store = createStore({
     modules: {
         header,
         user,
-        llmsh
+        llmsh,
+        config
     },
 
     // 持久化配置

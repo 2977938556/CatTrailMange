@@ -3,11 +3,10 @@
         <div class="content" v-if="$route.meta.path != '/hdglsubmit'">
             <div class="content-header">
                 <div class="left">
-                    <h1>测试</h1>
-                    <p>测试</p>
+                    <h1>{{ radio1 }}:</h1>
+                    <p>{{ typeData.total }}</p>
                 </div>
                 <div class="right">
-
                     <!-- 搜索模块 -->
                     <div class="input demo-input-size">
                         <el-input clearable v-model="search" class="w-50 m-2" size="large" placeholder="Please Input"
@@ -69,7 +68,7 @@
                 </div>
             </div>
             <div class="content-box">
-                <div class="content-box-table">
+                <div class="content-box-table" v-if="GoodsList">
                     <!-- 这里是渲染活动列表的 -->
                     <el-table :data="GoodsList" :border=true :stripe="true" v-loading="loading" empty-text="没有数据哦"
                         :default-sort="[{ prop: 'to_examine', order: 'ascending' }]" :sort-by="sortBy" style="width: 100%">
@@ -86,7 +85,7 @@
                         </el-table-column>
                         <el-table-column prop="time" label="活动时间">
                             <template #default="scope">
-                                <!-- {{ `${FromTimeArrat(scope.row.time[0])}-${FromTimeArrat(scope.row.time[1])}` }} -->
+                                {{ `${FromTimeArrat(scope.row.time[0])}-${FromTimeArrat(scope.row.time[1])}` }}
                             </template>
                         </el-table-column>
                         <el-table-column prop="people" label="报名人数">
@@ -392,6 +391,7 @@ export default {
     width: 100%;
     padding: 0;
     flex-wrap: wrap;
+
 }
 
 .demo-date-picker .block {
@@ -435,21 +435,21 @@ export default {
             align-items: center;
 
             .left {
-                flex: 1;
+                width: 100%;
                 padding-left: 20px;
                 display: flex;
                 align-items: center;
             }
 
             .right {
-                flex: 0.5;
+                width: 100%;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                // border: 1px solid red;
+                border: 1px solid red;
 
                 .el-button {
-                    // margin-left: 20px  ;
+                    margin-left: 20px;
                 }
 
             }

@@ -537,7 +537,6 @@ export default {
                         }
 
                         .right {
-                            flex: 0.7;
                             display: flex;
                             justify-content: flex-end;
                             // background: rgb(224, 17, 17);

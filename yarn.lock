@@ -348,6 +348,14 @@ delayed-stream@~1.0.0:
   resolved "https://registry.npmmirror.com/delayed-stream/-/delayed-stream-1.0.0.tgz#df3ae199acadfb7d440aaae0b29e2272b24ec619"
   integrity sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==
 
+echarts@5:
+  version "5.4.3"
+  resolved "https://registry.npmmirror.com/echarts/-/echarts-5.4.3.tgz#f5522ef24419164903eedcfd2b506c6fc91fb20c"
+  integrity sha512-mYKxLxhzy6zyTi/FaEbJMOZU1ULGEQHaeIeuMR5L+JnJTpz+YR03mnnpBhbR4+UYJAgiXgpyTVLffPAjOTLkZA==
+  dependencies:
+    tslib "2.3.0"
+    zrender "5.4.4"
+
 element-plus@^2.3.6:
   version "2.3.6"
   resolved "https://registry.npmmirror.com/element-plus/-/element-plus-2.3.6.tgz#848f8834ed70adfbae8f4dec5303a9126d472d28"
@@ -587,6 +595,11 @@ prr@~1.0.1:
   resolved "https://registry.npmmirror.com/prr/-/prr-1.0.1.tgz#d3fc114ba06995a45ec6893f484ceb1d78f5f476"
   integrity sha512-yPw4Sng1gWghHQWj0B3ZggWUm4qVbPwPFcRG8KyxiU7J2OHFSoEHKS+EZ3fv5l1t9CyCiop6l/ZYeWbrgoQejw==
 
+resize-detector@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.npmmirror.com/resize-detector/-/resize-detector-0.3.0.tgz#fe495112e184695500a8f51e0389f15774cb1cfc"
+  integrity sha512-R/tCuvuOHQ8o2boRP6vgx8hXCCy87H1eY9V5imBYeVNyNVpuL9ciReSccLj2gDcax9+2weXy3bc8Vv+NRXeEvQ==
+
 rollup@^3.21.0:
   version "3.24.0"
   resolved "https://registry.npmmirror.com/rollup/-/rollup-3.24.0.tgz#865dee1fe0bb528747b59914dfab25e6f480e370"
@@ -624,6 +637,11 @@ source-map@~0.6.0:
   resolved "https://registry.npmmirror.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
   integrity sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==
 
+tslib@2.3.0:
+  version "2.3.0"
+  resolved "https://registry.npmmirror.com/tslib/-/tslib-2.3.0.tgz#803b8cdab3e12ba581a4ca41c8839bbb0dacb09e"
+  integrity sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==
+
 tslib@^2.3.0:
   version "2.5.3"
   resolved "https://registry.npmmirror.com/tslib/-/tslib-2.5.3.tgz#24944ba2d990940e6e982c4bea147aba80209913"
@@ -644,6 +662,19 @@ vue-demi@*:
   version "0.14.5"
   resolved "https://registry.npmmirror.com/vue-demi/-/vue-demi-0.14.5.tgz#676d0463d1a1266d5ab5cba932e043d8f5f2fbd9"
   integrity sha512-o9NUVpl/YlsGJ7t+xuqJKx8EBGf1quRhCiT6D/J0pfwmk9zUwYkC7yrF4SZCe6fETvSM3UNL2edcbYrSyc4QHA==
+
+vue-demi@^0.13.11:
+  version "0.13.11"
+  resolved "https://registry.npmmirror.com/vue-demi/-/vue-demi-0.13.11.tgz#7d90369bdae8974d87b1973564ad390182410d99"
+  integrity sha512-IR8HoEEGM65YY3ZJYAjMlKygDQn25D5ajNFNoKh9RSDMQtlzCxtfQjdQgv9jjK+m3377SsJXY8ysq8kLCZL25A==
+
+vue-echarts@6:
+  version "6.6.1"
+  resolved "https://registry.npmmirror.com/vue-echarts/-/vue-echarts-6.6.1.tgz#5b0398427ea98ba33175bdc80f34af4ce8f27ee4"
+  integrity sha512-EpreTzlNeJ+eaUn0AhXEmKJk98xJGecgTqAdyZovoXWnhTxnlW2HuBM0ei3y8rLw1JCUabf8/sYvxjlr8SzBKQ==
+  dependencies:
+    resize-detector "^0.3.0"
+    vue-demi "^0.13.11"
 
 vue-router@4:
   version "4.2.2"
@@ -677,3 +708,10 @@ vuex@^4.1.0:
   integrity sha512-hmV6UerDrPcgbSy9ORAtNXDr9M4wlNP4pEFKye4ujJF8oqgFFuxDCdOLS3eNoRTtq5O3hoBDh9Doj1bQMYHRbQ==
   dependencies:
     "@vue/devtools-api" "^6.0.0-beta.11"
+
+zrender@5.4.4:
+  version "5.4.4"
+  resolved "https://registry.npmmirror.com/zrender/-/zrender-5.4.4.tgz#8854f1d95ecc82cf8912f5a11f86657cb8c9e261"
+  integrity sha512-0VxCNJ7AGOMCWeHVyTrGzUgrK4asT4ml9PEkeGirAkKNYXYzoPJCLvmyfdoOXcjTHPs10OZVMfD1Rwg16AZyYw==
+  dependencies:
+    tslib "2.3.0"

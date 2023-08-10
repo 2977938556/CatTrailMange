@@ -33,7 +33,7 @@ import { useRouter } from 'vue-router'
 import { computed } from 'vue'
 export default {
     name: "CatHeader",
-  
+
 
     setup() {
         let store = useStore()
@@ -68,6 +68,7 @@ export default {
     display: flex;
     justify-content: space-between;
     box-shadow: 1px 3px 8px rgba(0, 0, 0, 0.1);
+    background: white;
 
     .left {
         flex: 1
@@ -79,7 +80,14 @@ export default {
         align-items: center;
 
         .img {
-            padding-right: 20px;
+            width: 40px;
+            height: 40px;
+            padding-right: 50px;
+
+            span {
+                width: 40px;
+                height: 40px;
+            }
         }
 
         .text {

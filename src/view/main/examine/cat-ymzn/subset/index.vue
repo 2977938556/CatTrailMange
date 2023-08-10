@@ -524,7 +524,7 @@ export default {
                         height: 60px;
 
                         .left {
-                            flex: 1;
+                            // flex: 1;
                             display: flex;
                             justify-content: flex-start;
                             align-items: center;
@@ -533,10 +533,10 @@ export default {
                         }
 
                         .right {
-                            flex: 1;
+                            // flex: 1;
                             display: flex;
-                            justify-content: flex-end;
-                            // background: rgb(224, 17, 17);
+                            justify-content: space-between;
+
                         }
                     }
 

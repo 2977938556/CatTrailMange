@@ -3,16 +3,17 @@
         <div class="content" v-if="$route.meta.path != '/ymznsubmit'">
             <div class="content-header">
                 <div class="left">
-                    <h1>测试</h1>
-                    <p>测试</p>
+                    <h1>{{ radio1 }}:</h1>
+                    <p>{{ typeData.total }}</p>
                 </div>
                 <div class="right">
 
                     <div class="input demo-input-size">
-                        <el-input clearable v-model="search" class="w-50 m-2" size="large" placeholder="Please Input"
+                        <el-input style="padding-right: 20px;" clearable v-model="search" class="w-50 m-2" size="large" placeholder="Please Input"
                             prefix-icon="Search" @blur="searchFn" />
                     </div>
-                    <el-button type="primary" size="large" icon="Plus" @click="visible = true">发布指南</el-button>
+                    <el-button type="primary" size="large" icon="Plus" style="margin-right: 20px;"
+                        @click="visible = true">发布指南</el-button>
                     <el-radio-group v-model="radio1" size="large" @change="radioFn">
                         <el-radio-button :label="item.name" v-for="item in tabList" :key="item.label" />
                     </el-radio-group>
@@ -501,17 +502,8 @@ export default {
             }
 
             .right {
-                flex: 0.6;
                 display: flex;
                 justify-content: space-between;
-                align-items: center;
-                // padding-left: 20px;
-
-                // border: 1px solid red;
-
-                // .el-button {
-                //     // margin-left: 20px  ;
-                // }
 
             }
 

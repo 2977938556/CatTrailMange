@@ -17,7 +17,11 @@ import Cat_YmznglPage from '@/view/main/examine/cat-ymzn/index.vue'// 养猫指�
 
 
 // 配置模块
-import Cat_config from '@/view/main/config/index.vue'// 配置管理
+// import Cat_config from '@/view/main/config/index.vue'// 配置管理
+// 配置模块的菜单模块
+import Cat_HomeBanner from '@/view/main/config/con-homebanner/index.vue'// 轮播图管理
+import Cat_message from '@/view/main/config/con-tzmssage/index.vue'// 通知管理
+
 
 
 
@@ -34,6 +38,7 @@ import Cat_YhglSubmit from '@/view/main/examine/cat-yhgl/subset/index.vue' // �
 
 // 登录页面
 import Login from '@/view/login/index.vue'
+import Regiser from '@/view/login/register.vue'
 
 
 
@@ -68,12 +73,14 @@ const routes = [
                     { path: "yhglsubmit", name: 'yhglsubmit', component: Cat_YhglSubmit, meta: { name: "用户详情页面", path: "/yhglsubmit" } }
                 ]
             },// 用户管理
-            { path: 'pzgl', component: Cat_config, name: 'pzgl', meta: { name: "配置管理", path: 'pzgl' } },// 配置管理
+            { path: 'homebannr', component: Cat_HomeBanner, name: 'homebannr', meta: { name: "轮播图管理", path: '/homebannr' } },
+            { path: 'tzmessage', component: Cat_message, name: 'tzmessage', meta: { name: "通知管理", path: '/tzmessage' } },// 配置管理
         ]
     }, {
         path: "/login", component: Login, name: "login", meta: { name: "登录页面", path: '/login' }
+    }, {
+        path: "/register", component: Regiser, name: "regiser", meta: { name: "注册页面", path: '/register' }
     }
-
 ]
 
 
@@ -104,7 +111,8 @@ const router = createRouter({
 // 优化路由守卫
 router.beforeEach((to, from, next) => {
     // const token = localStorage.getItem('token');
-    let whiteList = ['/login'];
+    // 白名单
+    let whiteList = ['/login', '/register'];
     let token = JSON.parse(localStorage.getItem('user-store'))?.user?.profile?.token || false
 
     // 用户已登录，跳转至首页

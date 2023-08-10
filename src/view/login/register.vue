@@ -3,7 +3,7 @@
         <el-card class="box-card" shadow="never">
             <template #header>
                 <div class="card-header">
-                    <span style="font-size: 36px;color:#FF7C00;font-weight: 900;">猫迹后台管理系统(登录)</span>
+                    <span style="font-size: 36px;color:#FF7C00;font-weight: 900;">猫迹后台管理系统(注册)</span>
                 </div>
             </template>
 
@@ -25,11 +25,18 @@
                         </div>
                         <el-input v-model="password" type="password" placeholder="请输入你的密码" show-password />
                     </div>
-
+                    <div>
+                        <div class=" sub-title my-2 text-sm text-gray-600">
+                            <el-icon>
+                                <Unlock />
+                            </el-icon> 授权码
+                        </div>
+                        <el-input v-model="code" type="password" placeholder="请输入你的密码" show-password />
+                    </div>
                 </div>
                 <div class="btns">
-                    <el-button type="warning" @click="submit" size="large" :icon="Position">登录</el-button>
                     <el-button type="warning" plain @click="register" size="large" :icon="MessageBox">注册</el-button>
+                    <el-button type="warning" @click="submit" size="large" :icon="Position">登录</el-button>
                 </div>
             </div>
 
@@ -44,7 +51,7 @@
 <script setup>
 import { ref } from 'vue'
 import { ElMessage, ElNotification } from 'element-plus'
-import { GetUserLogin } from '@/api/login.js'
+import { PushRegister } from '@/api/login.js'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 import { Position, MessageBox } from '@element-plus/icons-vue'
@@ -53,6 +60,7 @@ import { Position, MessageBox } from '@element-plus/icons-vue'
 
 let username = ref('FeiMao')
 let password = ref('111111')
+let code = ref('74110')
 
 
 let store = useStore()
@@ -60,32 +68,28 @@ let router = useRouter()
 let route = useRoute()
 
 
+// 注册
+let register = async () => {
 
-
-
-// 这里我们需要进行设置用户的名称
-let submit = async () => {
     try {
-        if (username.value == "" || password.value == "") {
-            return ElMessage({
-                message: '账户或者密码不能为空',
-                type: 'error',
-            })
-        }
-        let { result } = await GetUserLogin({ username: username.value, password: password.value })
+        let { result } = await PushRegister({
+            username: username.value,
+            password: password.value,
+            code: code.value
+        })
 
-        if (result.data && result.token != "") {
-            // 添加数据模块
-            store.commit('user/SetUser', { ...result.data, token: result.token })
-            router.push(route.query.redirectUrl || '/')
-            return ElMessage({
-                message: `登录成功 ${result.data.username}`,
-                type: 'success',
-            })
-        }
+        ElMessage({
+            message: result.message || "注册管理员账户成功",
+            type: 'success',
+        })
+
+        username.value = ""
+        password.value = ""
+        code.value = ""
+
 
     } catch ({ response: { data } }) {
-        return ElMessage({
+        ElMessage({
             message: data.message || "服务器错误",
             type: 'error',
         })
@@ -94,14 +98,10 @@ let submit = async () => {
 
 
 
-// 注册
-let register = () => {
-    router.push('/register')
-
+// 跳转到注册页面
+let submit = async () => {
+    router.push('/login')
 }
-
-
-
 </script>
 
 

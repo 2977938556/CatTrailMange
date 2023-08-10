@@ -16,8 +16,9 @@ import { ElMessage } from 'element-plus'
 // export const baseURL = 'http://172.16.69.58:3000/api';
 // export const baseURL = ' http://192.168.43.57:3000/api';
 // export const baseURL = ' http://192.168.1.10057:3000/api';
-export const baseURL = ' http://192.168.43.57:3000/api';
-// export const baseURL = ' http://47.115.207.47:8848/api';
+// export const baseURL = ' http://192.168.43.57:3000/api';
+export const baseURL = 'http://192.168.1.107:3000/api';
+
 
 const instance = axios.create({
     baseURL,

@@ -52,16 +52,21 @@ export default {
 .el-header {
   padding: 0px;
   height: 56px;
-  
 
 }
+
+// .common-layou{
+//   width: 1440px;
+//   overflow: hidden;
+// }
 
 // 这里是内容区域的设置
 .el-main {
   width: 98%;
   height: 100%;
   margin: 0 auto;
-  background: rgb(71, 110, 168);
+  // background: rgb(71, 110, 168);
+  background: white;
   border-radius: 10px;
   margin-bottom: 20px;
 }
