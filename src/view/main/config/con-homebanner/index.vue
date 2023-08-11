@@ -25,8 +25,7 @@
                 <li>
                     <p>搜索</p>
                     <div>
-                        <el-input class="w-50 m-2" placeholder="输入关键词" v-model="fromData.search"
-                            :prefix-icon="Search" />
+                        <el-input class="w-50 m-2" placeholder="输入关键词" v-model="fromData.search" :prefix-icon="Search" />
                     </div>
                 </li>
             </ul>
@@ -61,6 +60,7 @@
                 <el-table-column prop="title" label="广告标题" width="180" />
                 <el-table-column prop="column" label="所属栏目" width="180" />
                 <el-table-column prop="pagepath" label="页面路径" width="180" />
+                <el-table-column prop="to_id" label="跳转的ID" width="100" />
                 <el-table-column prop="to_examine" label="状态" width="180">
                     <template #default="scope">
                         <el-tag class="ml-2" :type="`${scope.row.to_examine == 'pass' ? 'success' : 'info'}`">
@@ -83,8 +83,8 @@
 
         <!-- 发布模块 -->
         <div class="homebanner-dialog">
-            <el-dialog v-model="dialogTableVisible" @close="cloneDialog" :title="EditType != null ? '编辑' : '新增'" height="100%"
-                width="600px">
+            <el-dialog v-model="dialogTableVisible" @close="cloneDialog" :title="EditType != null ? '编辑' : '新增'"
+                height="100%" width="600px">
                 <div class="dialog-content" v-loading="loadings">
                     <div class="input">
                         <div>
@@ -99,19 +99,17 @@
                             </el-select>
                         </div>
                         <div>
-                            <p>所属栏目</p>
-                            <el-select v-model="inputData.column" class="m-2" placeholder="Select">
-                                <el-option v-for="item in columnOtion" :key="item.value" :label="item.label"
-                                    :value="item.value" />
-                            </el-select>
-                        </div>
-                        <div>
                             <p>页面路径</p>
                             <el-select v-model="inputData.pagepath" class="m-2" placeholder="Select">
                                 <el-option v-for="item in pagepathOption" :key="item.value" :label="item.label"
                                     :value="item.value" />
                             </el-select>
                         </div>
+                        <div>
+                            <p>跳转的ID</p>
+                            <el-input placeholder="请输入你的跳转的Id" v-model="inputData.to_id" />
+                        </div>
+
                     </div>
                     <div class="img">
                         <p>上传图片</p>
@@ -266,6 +264,7 @@ let inputData = reactive({
     weight: 1,// 权重 1-5
     column: "home",// 所属栏目
     pagepath: "/catdetail",// 页面路径
+    to_id: "",
 })
 
 
@@ -360,6 +359,7 @@ let fromData = reactive({
     search: "",
     stor: 0,
     column: 'home',
+    to_id: "",
 })
 
 let loading = ref(false)
@@ -448,6 +448,7 @@ let editTab = (data) => {
     inputData.weight = data.weight;
     inputData.column = data.column;
     inputData.pagepath = data.pagepath
+    inputData.to_id = data.to_id
     imageUrl.value = data.imageUrl
 
 }

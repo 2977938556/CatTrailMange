@@ -550,7 +550,6 @@ export default {
                         }
 
                         .right {
-                            flex: 1;
                             display: flex;
                             justify-content: flex-end;
                             // background: rgb(224, 17, 17);

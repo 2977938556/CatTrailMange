@@ -203,7 +203,7 @@ onMounted(async () => {
     });
 
 
-    // 用户增长的数据
+    // 申请领养
     let { result: ApplyData } = await GetApply({ time: 7 });
     let myApplyData_myChartrt = renderChart({
         dom: apply.value,
@@ -221,7 +221,7 @@ onMounted(async () => {
 
 
 
-    // 用户增长的数据
+    // 申请
     let { result: applyno } = await GetApplyOkNo();
     let myApply_myChartrt = renderChart({
         dom: noapply.value,
@@ -248,6 +248,7 @@ onMounted(async () => {
         myChart.resize();
         myChUser_myChartrt.resize();
         myApplyData_myChartrt.resize();
+        myApply_myChartrt.resize();
     });
 
 })
@@ -288,7 +289,7 @@ GetClickSearch().then(({ result: data }) => {
 .small {
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 1px 1px 1px red;
+    box-shadow: 1px -1px 16px 0px #d6d6d6;
 }
 
 

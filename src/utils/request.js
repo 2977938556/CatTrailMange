@@ -16,8 +16,9 @@ import { ElMessage } from 'element-plus'
 // export const baseURL = 'http://172.16.69.58:3000/api';
 // export const baseURL = ' http://192.168.43.57:3000/api';
 // export const baseURL = ' http://192.168.1.10057:3000/api';
-// export const baseURL = ' http://192.168.43.57:3000/api';
-export const baseURL = 'http://192.168.1.107:3000/api';
+// export const baseURL = ' http://192.168.1.107:3000/api';
+export const baseURL = ' http://192.168.137.1:3000/api';
+// export const baseURL = 'http://121.37.119.45:3000/api';
 
 
 const instance = axios.create({
@@ -38,8 +39,6 @@ instance.interceptors.request.use(config => {
 }, err => {
     return Promise.reject(err)
 })
-
-
 
 
 

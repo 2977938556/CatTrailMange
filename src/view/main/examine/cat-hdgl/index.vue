@@ -91,8 +91,7 @@
                         <el-table-column prop="people" label="报名人数">
                             <template #default="scope">
                                 <h5 style="color: rgba(255, 124, 0, 1);">{{
-                                    `已报名(${scope?.row?.clickCount})/计划:${scope.row.people}` }}</h5>
-                                <!-- {{  }} -->
+                                    `已报名(${scope.row.participant.length})/计划:${scope.row.people}` }}</h5>
                             </template>
                         </el-table-column>
                         <el-table-column prop="to_examine" label="活动状态" sortable>
@@ -238,6 +237,9 @@ export default {
             people: 10,// 报名的限制人数
         })
 
+
+
+
         const defaultTime = new Date(2000, 1, 1, 12, 0, 0)
         // 处理图片上传模块
         let imgUpdata = (e) => {
@@ -256,6 +258,7 @@ export default {
                 // 将base64保存到变量中
                 HdFromData.base64 = base64;
                 HdFromData.imgType = file.type
+                HdFromData.size = file.size
 
                 const url = URL.createObjectURL(file);
                 // 将url保存到变量中
@@ -279,7 +282,27 @@ export default {
 
             // 提交数据
             try {
-                let { result: { data } } = await PuhsActivityPost(HdFromData)
+
+                // 图片数据
+                let FormDataList = ref([
+                    {
+                        name: HdFromData.imgType,
+                        size: HdFromData.size,
+                        base64: HdFromData.base64
+
+                    }
+                ])
+                // input数据
+                let inputData = ref({
+                    title: HdFromData.title,
+                    adds: HdFromData.adds,
+                    content: HdFromData.content,
+                    time: HdFromData.time,
+                    people: HdFromData.people,
+                })
+
+
+                let { result: { data } } = await PuhsActivityPost({ FormDataList: FormDataList.value, inputData: inputData.value })
                 GetBgDataFn()
                 ElMessage({
                     message: '发布成功', type: 'success',
@@ -446,7 +469,6 @@ export default {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                border: 1px solid red;
 
                 .el-button {
                     margin-left: 20px;

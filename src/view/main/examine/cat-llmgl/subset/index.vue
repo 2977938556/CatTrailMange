@@ -126,8 +126,8 @@
                             <el-table :data="GoodsList" :border=true :stripe="true" v-loading="loading" empty-text="没有数据哦"
                                 :default-sort="[{ prop: 'updated_at', order: 'ascending' }, { prop: 'to_examine', order: 'ascending' }]"
                                 style="width: 100%">
-                                <el-table-column prop="user_id.username" label="用户名称" />
-                                <el-table-column prop="to_examine" label="状态" sortable
+                                <el-table-column prop="user_id.username" label="用户名称" width="100" />
+                                <el-table-column prop="to_examine" label="状态" sortable width="100"
                                     :sort-by="['pass', 'examine', 'danger']">
                                     <template #default="scope">
                                         <el-tag class="ml-2" type="success"
@@ -138,8 +138,8 @@
                                         <el-tag type="danger" v-else-if="scope.row.to_examine == 'delete'">已删除</el-tag>
                                     </template>
                                 </el-table-column>
-                                <el-table-column prop="updated_at" label="发布时间" sortable :formatter="FormatTime" />
-                                <el-table-column prop="to_examine" label="审核" class="examine" width="500px" sortable>
+                                <el-table-column prop="updated_at" label="发布时间" sortable :formatter="FormatTime" width="100" />
+                                <el-table-column prop="to_examine" label="审核" class="examine" width="300px" sortable>
                                     <template #default="scope">
                                         <div class="btn">
                                             <!-- 这里是已经审核通过的模块 -->
@@ -555,7 +555,6 @@ export default {
                         }
 
                         .right {
-                            flex: 1;
                             display: flex;
                             justify-content: flex-end;
                             // background: rgb(224, 17, 17);

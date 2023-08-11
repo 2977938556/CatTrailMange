@@ -3,7 +3,7 @@
         <!-- 头部2 -->
         <div class="homebanner-header small">
             <h1>通知数据({{ dialogTableVisibles?.length }})</h1>
-            <el-button type="primary" size="large" icon="Plus" @click="dialogTableVisible = true">发布广告</el-button>
+            <el-button type="primary" size="large" icon="Plus" @click="dialogTableVisible = true">发布通知</el-button>
         </div>
 
         <!-- 筛选 -->
@@ -19,14 +19,11 @@
                 <li>
                     <p>搜索</p>
                     <div>
-                        <el-input class="w-50 m-2" placeholder="输入关键词" v-model="fromData.search"
-                            :prefix-icon="Search" />
+                        <el-input class="w-50 m-2" placeholder="输入关键词" v-model="fromData.search" :prefix-icon="Search" />
                     </div>
                 </li>
             </ul>
-
         </div>
-
         <!-- 表格数据 -->
         <div class="homebanner-table">
             <el-table :data="dialogTableVisibles" v-loading="loading" style="width: 100%" :border="true" empty-text="没有数据哦"
@@ -43,6 +40,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="clickCount" label="点击量" />
+                <el-table-column prop="to_id" label="跳转ID" />
                 <el-table-column prop="to_examine" label="操作">
                     <template #default="scope">
                         <el-button type="primary" :icon="Edit" circle @click="editTab(scope.row)" />
@@ -62,6 +60,10 @@
                         <div>
                             <p>通知标题</p>
                             <el-input placeholder="1" v-model="inputData.title" />
+                        </div>
+                        <div>
+                            <p>跳转ID</p>
+                            <el-input placeholder="1" v-model="inputData.to_id" />
                         </div>
                         <div>
                             <p>所属栏目</p>
@@ -92,7 +94,6 @@
                 </div>
             </el-dialog>
         </div>
-
     </div>
 </template>
 
@@ -154,6 +155,8 @@ let inputData = reactive({
     title: "领养替代购买",// 标题
     column: "home",// 所属栏目
     pagepath: "/catdetail",// 页面路径
+    to_id: "",
+
 })
 
 
@@ -300,10 +303,11 @@ let editTab = (data) => {
     inputData.title = data.title;
     inputData.column = data.column;
     inputData.pagepath = data.pagepath
+    inputData.to_id = data.to_id
 }
 
 </script>
-
+to_id
 
 <style lang="less" scoped>
 .homebanner {
